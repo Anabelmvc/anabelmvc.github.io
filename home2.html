@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Anabel Miryana · Home</title>
+
+<style>
+  @font-face {
+    font-family: 'Arial Variable';
+    src: url('fonts/Arial Variable.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root{
+    --font: 'Inter Tight', Helvetic;
+    --bg: #f4efe6;
+    --ink: #111111;
+    --muted: #5a5a5a;
+    --accent: #1a1a1a;
+    --accent-color: #b6ff3a;
+    --hover-blue: #1e3a8a;
+  }
+
+  *{
+    box-sizing: border-box;
+    cursor: auto;
+  }
+
+  html{
+    background: var(--bg);
+  }
+
+  body{
+    font-family: 'Arizona Variable', serif;
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Fondo de video ---------- */
+  #bg-video{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.25) contrast(1.05);
+  }
+
+  /* ---------- Cabecera: menú arriba + nombre debajo ---------- */
+  .site-header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding: clamp(1.1rem, 4vh, 2.25rem) clamp(1.25rem, 6vw, 6rem) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* ---------- Menú: cuatro palabras repartidas en una fila ---------- */
+  .menu{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .menu-item{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'terminal-grotesque', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #000000;
+    font-size: clamp(0.95rem, 2.2vw, 1.85rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    padding: 0.1em 0;
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .menu-item:hover{
+    color: #ff5fa2;
+    transform: translateY(-3px);
+  }
+
+  .info-window .text-block--about p {
+    margin: 0 0 0.7em;
+  }
+
+  .info-window .text-block--about .about-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    margin: 0 0 2.5rem;
+    font-size: clamp(0.85rem, 0.95vw, 1rem);
+    letter-spacing: 0.04em;
+  }
+
+  .info-window .text-block--about .about-contact a {
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+  }
+
+  .info-window .text-block--about .about-contact a:hover {
+    color: #ff5fa2;
+  }
+
+  /* Name as a bold title with a small subtitle underneath (Cargo-style) */
+  .info-window .text-block--about .about-name {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+
+  .info-window .text-block--about .about-subtitle {
+    margin: 0 0 0.8rem;
+    font-size: clamp(0.85rem, 0.95vw, 1rem);
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.75);
+  }
+
+  @media (max-width: 560px){
+    .site-header{
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .menu{
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.25rem;
+    }
+    .menu-item{
+      font-size: 1rem;
+    }
+  }
+
+  /* ---------- Big pop-up overlay (keeps original page styles) ---------- */
+  .info-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(6.5rem, 15vh, 8.5rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 6vh, 4rem);
+    background: rgba(244, 239, 230, 0.6);
+    opacity: 0;
+    overflow-y: auto;
+    transition: opacity 0.3s ease;
+  }
+
+  .info-overlay.is-open {
+    opacity: 1;
+  }
+
+  .info-overlay[hidden] {
+    display: none;
+  }
+
+  .info-window {
+    position: relative;
+    width: min(94vw, 1480px);
+    color: #000000;
+    transform: translateY(14px) scale(0.985);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .info-overlay.is-open .info-window {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .info-window:focus {
+    outline: none;
+  }
+
+  .info-content {
+    width: 100%;
+  }
+
+  /* ---- Text pages (artist statement / about) : original .text-block style ---- */
+  .info-window .text-block {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 1.5rem 2rem 2rem;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(1rem, 1.2vw, 1.28rem);
+    line-height: 1.55;
+  }
+
+  .info-window .text-block--left {
+    text-align: left;
+    background: rgba(244, 239, 230, 0.18);
+    margin-left: 0;
+  }
+
+  /* ---- About me : portrait fills the pop-up, text in a glass panel on the left ---- */
+  .info-window--about {
+    min-height: min(88vh, 860px);
+    display: flex;
+    align-items: flex-start;
+    background-image:
+      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
+      url('web/images/Artist Statement/Sensing_bodies_portrait.webp');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* ---- About me + Works : full-page window, menu stays visible on top ---- */
+  .info-overlay--full {
+    padding: 0;
+    background: var(--bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .info-overlay--full .info-window {
+    width: 100%;
+    min-height: 100dvh;
+    padding: clamp(6.5rem, 15vh, 8.5rem) 0 clamp(2rem, 6vh, 4rem);
+    transform: none;
+  }
+
+  .info-overlay--full .info-window--about {
+    display: block;
+    padding: 0;
+    background: var(--bg);
+  }
+
+  /* First screen of About: portrait with the intro text on the left */
+  .about-hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: flex-start;
+    padding: clamp(6.5rem, 15vh, 8.5rem) 0 clamp(2rem, 6vh, 4rem);
+    background-image:
+      linear-gradient(rgba(244, 239, 230, 0.75) 0%, rgba(244, 239, 230, 0) 22%),
+      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
+      linear-gradient(rgba(244, 239, 230, 0) 80%, var(--bg) 100%),
+      url('web/images/Artist Statement/Sensing_bodies_portrait.webp');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* ---- CV below the portrait: two columns of sections, date + details rows ---- */
+  .about-cv {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(2rem, 5vw, 5rem);
+    padding: clamp(2rem, 6vh, 4rem) clamp(1.5rem, 5vw, 4.5rem) clamp(4rem, 10vh, 6rem);
+    color: #000000;
+    font-size: clamp(0.95rem, 1vw, 1.05rem);
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .about-cv .cv-section {
+    padding: clamp(2rem, 5vh, 3rem) 0;
+  }
+
+  .about-cv h3 {
+    margin: 0 0 1.75rem;
+    font-size: clamp(1.15rem, 1.4vw, 1.4rem);
+    font-weight: 700;
+  }
+
+  .about-cv .cv-list {
+    margin: 0;
+    font-size: clamp(1.05rem, 1.25vw, 1.3rem);
+    line-height: 1.65;
+  }
+
+  .about-cv .cv-row {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 1rem;
+    margin: 0 0 1.75rem;
+  }
+
+  .about-cv .cv-date {
+    font-size: 0.88rem;
+    color: rgba(0, 0, 0, 0.75);
+  }
+
+  .about-cv small {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .about-cv .cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    margin: 0;
+  }
+  .about-cv .cv-contact a {
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+  }
+  .about-cv .cv-contact a:hover { color: #ff5fa2; }
+
+  /* Friends: third page of About, the picture fills the screen */
+  .about-cv .cv-friends {
+    grid-column: 1 / -1;
+    /* the picture fills the last screen, fading in and out like the portrait at the top */
+    min-height: 100dvh;
+    margin: 0 calc(-1 * clamp(1.5rem, 5vw, 4.5rem)) calc(-1 * clamp(4rem, 10vh, 6rem));
+    padding: clamp(6rem, 18vh, 10rem) clamp(1.5rem, 5vw, 4.5rem) clamp(4rem, 10vh, 6rem);
+    border-top: 0;
+    background:
+      linear-gradient(var(--bg) 0%, rgba(244, 239, 230, 0) 30%),
+      linear-gradient(rgba(244, 239, 230, 0) 75%, var(--bg) 100%),
+      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 35%, rgba(244, 239, 230, 0.1) 65%, rgba(244, 239, 230, 0) 100%),
+      url('web/images/contact/contact-picture.webp') center / cover no-repeat;
+  }
+
+  .about-cv .cv-friends { position: relative; }
+  .about-cv .cv-friends-credit {
+    position: absolute;
+    right: var(--edge);
+    bottom: var(--edge);
+    margin: 0;
+    font-size: 0.8rem;
+    color: #000000;
+  }
+
+  .about-cv .cv-friends-list {
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-cv .cv-friends-list a {
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+  }
+
+  .about-cv .cv-friends-list a:hover {
+    color: #ff5fa2;
+  }
+
+  @media (max-width: 760px) {
+    .about-cv {
+      grid-template-columns: 1fr;
+    }
+    .about-cv .cv-row {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+  }
+
+  /* Menu + contact line always stay on top, in every window and while scrolling */
+  .site-header {
+    z-index: 55;
+  }
+
+  /* While a window is open, the strip behind the menu is the same colour as the page,
+     so pictures scroll cleanly underneath it instead of showing through */
+  body.window-open .site-header {
+    background: var(--bg) !important;
+  }
+
+  /* About text: one column on the left (clear of the portrait), set tighter so it fits on one screen */
+  .info-window .text-block--about {
+    text-align: left;
+    width: min(100%, 720px);
+    max-width: 720px;
+    /* Text size follows the screen's width AND height, so the intro always fits on the first screen */
+    font-size: clamp(0.95rem, min(1.35vw, 2.2vh), 1.45rem);
+    line-height: 1.45;
+    margin: 0;
+    margin-left: clamp(1.5rem, 5vw, 4.5rem);
+    padding: clamp(0.5rem, 2vh, 1.25rem) clamp(1.75rem, 4vw, 2.75rem);
+    background: none;
+    border: 0;
+  }
+
+  .info-window .text-block h2 {
+    font-weight: 700;
+    font-size: clamp(1.7rem, 2.2vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin: 0 0 1.5rem;
+    color: #000000;
+  }
+
+  .info-window .artist-portrait {
+    display: block;
+    width: min(100%, 420px);
+    height: auto;
+    margin: 0 auto 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+  }
+
+  /* ---- Contact : same box style as the Artistic Research window ---- */
+  .info-window .contact-panel {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 2.25rem;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #000000;
+    text-align: center;
+    font-size: clamp(1rem, 1.2vw, 1.28rem);
+    line-height: 1.55;
+  }
+
+  .info-window .contact-panel h2 {
+    margin: 0 0 1.5rem;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 2.2vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #000000;
+  }
+
+  .info-window .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 3rem;
+  }
+
+  .info-window .contact-links a {
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+  }
+
+  .info-window .contact-links a:hover {
+    color: var(--hover-blue);
+  }
+
+  /* ---- Work : gallery — 3 columns, every image the same size ---- */
+  .info-window .symbol-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    width: 100%;
+    margin: 0;
+    padding: 0 clamp(1rem, 3vw, 3rem);
+  }
+
+  .info-window .work-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 clamp(2.5rem, 5vw, 4.5rem);
+    color: #000000;
+    text-decoration: none;
+  }
+
+  .info-window .work-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .info-window .work-card:hover img,
+  .info-window .work-card:focus-visible img {
+    opacity: 0.8;
+  }
+
+  /* Name, then medium, under each image */
+  .info-window .work-card span {
+    order: 2;
+    margin-top: 0.75rem;
+    font-family: 'terminal-grotesque', monospace;
+    font-size: clamp(0.85rem, 1vw, 1.1rem);
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+    color: #000000;
+    transition: color 0.25s ease;
+  }
+
+  .info-window .work-card .work-card-category {
+    order: 3;
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .info-window .work-card:hover span:not(.work-card-category) {
+    color: var(--hover-blue);
+  }
+
+  @media (max-width: 900px) {
+    .info-window .symbol-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .info-window .symbol-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .info-window .contact-links {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    /* About me on small screens: full-width scrim, text panel below the face */
+    .about-hero {
+      align-items: flex-end;
+      padding-top: 7.5rem;
+      background-image:
+        linear-gradient(rgba(244, 239, 230, 0.35), rgba(244, 239, 230, 0.75)),
+        url('');
+    }
+    .info-window .text-block--about {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      border-radius: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+  }
+
+  /* Background video only: no pop-out button when the mouse is over it */
+  #bg-video {
+    pointer-events: none;
+  }
+
+  /* ---------- Menu bar: no tint or line, no blur ---------- */
+  .site-header,
+  .detail-menu {
+    padding-top: clamp(0.9rem, 2.6vh, 1.4rem) !important;
+    padding-bottom: clamp(0.9rem, 2.6vh, 1.4rem) !important;
+    background: none !important;
+    border-bottom: 0;
+  }
+
+  .menu,
+  .detail-menu {
+    align-items: center !important;
+  }
+
+  .menu-item,
+  .detail-menu-item {
+    position: relative;
+    padding: 0.5em 0 !important;
+    border: 0 !important;
+    background: none !important;
+    transform: none !important;
+    transition: color 0.3s ease !important;
+  }
+
+
+  /* Artistic Research + Contact: no box around the text, nothing behind it */
+  .info-window .text-block:not(.text-block--about),
+  .info-window .contact-panel {
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Contact: full page like About — menu on top, picture behind, same fades, text centred */
+  .info-overlay.info-overlay--full.info-overlay--contact {
+    background:
+      linear-gradient(rgba(244, 239, 230, 0.75) 0%, rgba(244, 239, 230, 0) 22%),
+      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
+      url('web/images/contact/contact-picture.webp') center / cover no-repeat;
+  }
+
+  .info-overlay--contact .info-window {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .info-overlay--contact .info-window .contact-panel {
+    width: min(100%, 720px);
+    max-width: 720px;
+    margin: 0 auto !important;
+    padding: clamp(0.5rem, 2vh, 1.25rem) clamp(1.75rem, 4vw, 2.75rem);
+    text-align: center;
+  }
+
+  .info-overlay--contact .info-window .contact-panel h2 {
+    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin: 0 0 1.5rem;
+  }
+
+  .info-overlay--contact .info-window .contact-links {
+    justify-content: center;
+    gap: 0.75rem 2.5rem;
+    font-size: clamp(1.15rem, 1.6vw, 1.6rem);
+    font-weight: 700;
+  }
+
+  /* Friends section under the contact links */
+  .info-overlay--contact .contact-friends {
+    margin: 0;
+  }
+
+  .info-overlay--contact .contact-friends h3 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.15rem, 1.4vw, 1.4rem);
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .info-overlay--contact .contact-friends ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 2rem;
+    font-size: clamp(1.05rem, 1.35vw, 1.45rem);
+  }
+
+  .info-overlay--contact .contact-friends a {
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.25s ease;
+  }
+
+  .info-overlay--contact .contact-friends a:hover,
+  .info-overlay--contact .contact-links a:hover {
+    color: #ff5fa2;
+  }
+
+  /* Hidden on screen, still read by screen readers */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Arrow at the bottom of the first About screen: tells people to scroll */
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1rem, 4vh, 2.25rem);
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    border: 0;
+    background: none;
+    color: #000000;
+    cursor: pointer;
+    animation: scroll-hint-bob 1.8s ease-in-out infinite;
+    transition: color 0.25s ease;
+  }
+
+  .scroll-hint:hover { color: #ff5fa2; }
+
+  /* Arrows: same place on every page, right ones centred in the right margin, left ones in the left margin.
+     On the portrait it sits on the hair, so it is beige to show on the dark green */
+  .about-hero .scroll-hint {
+    left: calc(100% - var(--edge) / 2);
+    top: 47%;
+    bottom: auto;
+    color: var(--bg);
+    animation: none;
+  }
+  .about-hero .scroll-hint:hover { color: #ff5fa2; }
+  .about-hero .scroll-hint svg { display: block; transform: rotate(-90deg); }
+
+  /* Same place on the CV page, in black on the beige */
+  .about-cv-page .cv-next {
+    position: absolute;
+    left: calc(100% - var(--edge) / 2);
+    top: 47%;
+    bottom: auto;
+    z-index: 1;
+    color: #000000;
+    animation: none;
+  }
+  .about-cv-page .cv-next svg { display: block; transform: rotate(-90deg); }
+  .about-cv-page .cv-next:hover { color: #ff5fa2; }
+
+  /* On a phone the text covers the picture, so the button goes back to the bottom, in black */
+  @media (max-width: 900px) {
+    .about-hero .scroll-hint {
+      left: auto;
+      right: var(--edge);
+      top: auto;
+      bottom: clamp(1rem, 4vh, 2.25rem);
+      transform: none;
+      color: #000000;
+    }
+  }
+
+  /* About only scrolls sideways, to the right: portrait, CV, Friends.
+     Every page fits one screen, so scrolling up and down does nothing */
+  .about-track {
+    display: flex;
+    width: 100%;
+    height: 100dvh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .about-track::-webkit-scrollbar { display: none; }
+
+  .about-track > .about-hero,
+  .about-cv-page {
+    flex: 0 0 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .about-track > .about-hero { min-height: 0; overflow-y: auto; }
+  .about-cv-page { position: relative; }
+  .about-cv-page > .about-cv {
+    height: 100%;
+    overflow-y: auto;
+    align-content: start;
+    /* first headings start at the same height as the first Works row */
+    padding-top: calc(clamp(6.5rem, 15vh, 8.5rem) - clamp(2rem, 5vh, 3rem));
+    background: var(--bg);
+  }
+  /* The CV fits one screen: three columns, the second starts where the Works pictures start */
+  @media (min-width: 901px) {
+    .about-cv-page > .about-cv--grid {
+      grid-template-columns: minmax(0, 1fr) repeat(2, 24.25vw);
+      column-gap: 1.8vw;
+      padding-top: clamp(6.5rem, 15vh, 8.5rem);
+      padding-bottom: 0;
+    }
+    .about-cv--grid .cv-section { padding: 0 0 clamp(1.5rem, 4.5vh, 2.75rem); }
+    .about-cv--grid h3 { margin-bottom: clamp(0.75rem, 2vh, 1.25rem); }
+    .about-cv--grid .cv-row { grid-template-columns: 3.6rem minmax(0, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .cv-col { display: contents; }
+  }
+
+  /* Button that goes back to the portrait: same height as the arrow on the portrait,
+     in the empty left margin, so it never sits on the text */
+  .cv-back {
+    position: absolute;
+    left: calc(var(--edge) / 2);
+    top: 47%;
+    z-index: 1;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    border: 0;
+    background: none;
+    color: #000000;
+    cursor: pointer;
+    transition: color 0.25s ease;
+  }
+  .cv-back:hover { color: #ff5fa2; }
+  .cv-back svg { display: block; transform: rotate(90deg); }
+
+  /* On a phone the margin is too thin: the button goes at the bottom of the screen, on the left */
+  @media (max-width: 900px) {
+    .cv-back {
+      left: var(--edge);
+      top: auto;
+      bottom: clamp(1rem, 4vh, 2.25rem);
+      transform: none;
+      background: var(--bg);
+    }
+    /* Beige strip behind the arrows, so they never sit on the text */
+    .about-cv-page:has(.about-cv--grid)::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 6rem;
+      background: var(--bg);
+    }
+    .about-cv--grid { padding-bottom: 7rem; }
+    .about-cv-page .cv-next {
+      left: auto;
+      right: var(--edge);
+      top: auto;
+      bottom: clamp(1rem, 4vh, 2.25rem);
+      background: var(--bg);
+      animation: none;
+      transform: none;
+    }
+  }
+
+
+  @keyframes scroll-hint-bob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 8px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint { animation: none; }
+  }
+
+  /* Contact line under the menu that scrolls sideways in a loop (text only) */
+  .contact-ticker {
+    width: 100%;
+    margin: 0;
+    padding: 0.7rem 0;
+    overflow: hidden;
+    font-size: clamp(0.9rem, 1vw, 1.05rem);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .contact-ticker-track {
+    display: flex;
+    width: max-content;
+    animation: contact-ticker 35s linear infinite;
+  }
+
+  .contact-ticker:hover .contact-ticker-track {
+    animation-play-state: paused;
+  }
+
+  .contact-ticker-group {
+    display: flex;
+    white-space: nowrap;
+  }
+
+  /* Each item takes about a fifth of the screen: wide spacing, but not too empty */
+  .contact-ticker-group > span {
+    flex: 0 0 auto;
+    min-width: 22vw;
+    padding-right: 2rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .contact-ticker a {
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+
+  .contact-ticker a:hover {
+    color: #ff5fa2;
+  }
+
+  @keyframes contact-ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-ticker-track { animation: none; }
+  }
+
+  /* Same font for everything (matches the project pages) */
+  body, body * {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  }
+
+
+
+  /* ---------- Works: laid out like the "Make It Fit" example —
+     two equal columns, ~7.8% page margins, ~5.5% gap, pictures in their own shape,
+     bold title + regular subtitle right under each picture ---------- */
+  .info-overlay--full .info-window:has(.symbol-list) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .info-window .symbol-list {
+    display: block !important;
+    column-count: 2;
+    column-gap: 5.5vw;
+    width: 100%;
+    margin: 0;
+    padding: clamp(1rem, 4vh, 3rem) 7.8vw 0 !important;
+    box-sizing: border-box;
+  }
+
+  .info-window .work-card {
+    display: flex;
+    flex-direction: column;
+    break-inside: avoid;
+    margin: 0 0 clamp(2.25rem, 5vh, 3rem) !important;
+    padding: 0;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .info-window .work-card img {
+    aspect-ratio: auto !important;
+    object-fit: initial !important;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Title: bold */
+  .info-window .work-card span:not(.work-card-category) {
+    order: 2;
+    margin-top: 1.25rem;
+    font-size: clamp(1rem, 1.05vw, 1.3rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  /* Subtitle: regular weight, right under the title */
+  .info-window .work-card .work-card-category {
+    order: 3;
+    margin-top: 0.35rem;
+    font-size: clamp(0.95rem, 0.95vw, 1.15rem) !important;
+    line-height: 1.3;
+    letter-spacing: 0.06em !important;
+    text-transform: none !important;
+    color: inherit !important;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 760px) {
+    .info-window .symbol-list {
+      column-count: 1;
+      padding-left: 5vw !important;
+      padding-right: 5vw !important;
+    }
+  }
+
+  /* ---------- Works: one project per screen, text left + big picture right ---------- */
+  .work-rows {
+    width: 100%;
+  }
+
+  .work-row {
+    display: grid;
+    /* measured from the example: text from 6.4% of the width, picture 50% wide, ending 6.4% from the right */
+    grid-template-columns: minmax(0, 1fr) 50.3vw;
+    gap: 1.8vw;
+    align-items: start;
+    padding: 0 6.4vw clamp(4.5rem, 12vh, 7rem);
+    box-sizing: border-box;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work-row-text h3 {
+    margin: 0 0 0.35rem;
+    font-size: clamp(1.15rem, 1.25vw, 1.45rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    transition: color 0.25s ease;
+  }
+
+  .work-row-sub {
+    margin: 0 0 1.6rem;
+    font-size: clamp(1rem, 1.05vw, 1.2rem);
+    letter-spacing: 0.04em;
+  }
+
+  .work-row-desc {
+    margin: 0;
+    max-width: 42rem;
+    font-size: clamp(0.95rem, 1vw, 1.12rem);
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+  }
+
+  /* Picture: full column width, in its own rectangle shape (not cropped), like the example */
+  .work-row img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-position: center;
+    transition: opacity 0.25s ease;
+  }
+
+  .work-row img.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+
+  .work-row img.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .work-row:hover img.reveal.is-visible { opacity: 0.85; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-row img.reveal { opacity: 1; transform: none; transition: none; }
+  }
+  .work-row:hover h3 { color: #ff5fa2; }
+
+  @media (max-width: 760px) {
+    .work-row {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .work-row img { order: -1; }
+  }
+
+  /* Dark scrollbar in the windows, so no light strip shows on the right edge */
+  .info-overlay {
+    scrollbar-color: #8a8478 #f4efe6;
+  }
+
+  /* Menu words: capital letter only at the beginning */
+  .menu-item {
+    text-transform: none !important;
+  }
+
+  /* Menu: Home + About on the left, Works then Artistic research on the right */
+  #nav-about {
+    margin-left: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  #nav-work {
+    margin-left: auto;
+    margin-right: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  /* On a phone: smaller gaps so the menu stays on one line */
+  @media (max-width: 600px) {
+    .menu-item { font-size: 0.8rem !important; }
+    #nav-about { margin-left: 0.8rem; }
+    #nav-work { margin-right: 0.8rem; }
+  }
+
+
+
+  /* =========================================================
+     COHESIVE LAYOUT: one beige background and one grid for everything.
+     --edge = the margin on both sides (menu, About, CV, Works, Artistic research)
+  ========================================================= */
+  :root { --edge: 4vw; }
+
+  html, body,
+  .info-overlay--full,
+  .info-overlay--full .info-window--about { background-color: var(--bg); }
+
+  .site-header {
+    padding-left: var(--edge) !important;
+    padding-right: var(--edge) !important;
+  }
+
+  /* About intro starts exactly on the left edge of the grid */
+  .info-window .text-block--about {
+    margin-left: var(--edge) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* CV and Friends on the same edges */
+  .about-cv {
+    padding-left: var(--edge) !important;
+    padding-right: var(--edge) !important;
+  }
+  /* The Friends page fits the screen exactly */
+  .about-cv:has(> .cv-friends) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .about-cv .cv-friends {
+    flex: 1;
+    min-height: 0;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: calc(-1 * var(--edge)) !important;
+    margin-right: calc(-1 * var(--edge)) !important;
+    padding-left: var(--edge) !important;
+    padding-right: var(--edge) !important;
+  }
+
+  /* Little labels above the Works rows */
+  .work-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0 0 clamp(1.5rem, 4vh, 2.5rem);
+    padding: 0 var(--edge);
+  }
+  .work-labels button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 0.8rem;
+    color: #000000;
+    cursor: pointer;
+    transition: color 0.25s ease;
+  }
+  .work-labels button:hover,
+  .work-labels button[aria-pressed="true"] { color: #ff5fa2; }
+  .work-row.is-hidden { display: none; }
+
+  /* Works rows on the same edges */
+  .work-row {
+    padding-left: var(--edge) !important;
+    padding-right: var(--edge) !important;
+  }
+
+  /* Artistic research: full page like About and Works, text on the grid, left-aligned */
+  .info-overlay--full .info-window .text-block:not(.text-block--about) {
+    width: auto;
+    max-width: none;
+    margin: 0 var(--edge) !important;
+    padding: 0 !important;
+    text-align: left;
+  }
+
+  /* Artistic research title: same big bold style as the project titles */
+  .info-overlay--full .info-window .text-block:not(.text-block--about) h2 {
+    font-size: clamp(2.6rem, 4.2vw, 5.2rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin: 0 0 2.5rem;
+  }
+
+/* Everything you can click shows the hand */
+a[href], a[href] *, button, button * {
+  cursor: pointer;
+}
+
+/* Home sits in the exact middle of the menu; About moves to the left edge */
+.menu { position: relative; width: 100%; }
+#nav-home {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
+#nav-about { margin-left: 0; }
+@media (max-width: 600px) {
+  #nav-home { position: relative !important; margin: 0 0 0 0.8rem; order: 1; }
+  #nav-about { order: 0; }
+  #nav-work { order: 2; }
+  #nav-artist-statement { order: 3; }
+}
+
+/* About: the whole portrait with no fade or tint; white text sits on its dark left side, clear of the face */
+@media (min-width: 901px) {
+  .about-hero {
+    background: url('web/images/Artist Statement/Sensing_bodies_portrait.webp') center / cover no-repeat !important;
+  }
+  .about-hero .scroll-hint { color: #ffffff; }
+  .about-hero .text-block--about {
+    width: 44vw !important;
+    max-width: 44vw !important;
+  }
+  .about-hero .text-block--about,
+  .about-hero .text-block--about h2,
+  .about-hero .text-block--about p,
+  .about-hero .text-block--about .about-subtitle,
+  .about-hero .text-block--about .about-contact a {
+    color: #ffffff !important;
+  }
+  .about-hero .text-block--about .about-contact a:hover {
+    color: #ff5fa2 !important;
+  }
+}
+
+/* Friends: same as About, the whole picture with no fade, and a big title without the arrow.
+   Black reads better than white on this mid-tone picture. */
+.about-cv .cv-friends {
+  padding-top: clamp(7rem, 16vh, 9rem) !important;
+  background: url('web/images/contact/contact-picture.webp') center / cover no-repeat !important;
+}
+.about-cv .cv-friends h3 {
+  font-size: clamp(2.2rem, 3.2vw, 3.2rem);
+  line-height: 1.1;
+}
+.about-cv .cv-friends .cv-friends-credit {
+  right: var(--edge);
+  bottom: 1rem;
+  font-style: italic;
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+
+  <header class="site-header">
+    <nav class="menu" aria-label="Main navigation">
+      <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Home</button>
+      <button class="menu-item" type="button" id="nav-about" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('about', this)">About / CV</button>
+      <button class="menu-item" type="button" id="nav-work" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('work', this)">Works</button>
+      <button class="menu-item" type="button" id="nav-artist-statement" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('artist-statement', this)">Artistic research</button>
+    </nav>
+  </header>
+
+  <!-- ---------- Big pop-up overlay ---------- -->
+  <div class="info-overlay" id="info-overlay" hidden>
+    <div class="info-window" id="info-window" role="dialog" aria-modal="true" tabindex="-1">
+      <div class="info-content" id="info-content"></div>
+    </div>
+  </div>
+
+  <!-- ---------- Hidden content templates for the pop-up ---------- -->
+  <template id="tpl-work">
+    <!-- One project per screen: text on the left, big picture on the right. Order = order on the page. -->
+    <div class="work-labels">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="3d-modeling" aria-pressed="false">3D modeling</button>
+      <button type="button" data-filter="performance" aria-pressed="false">Performance</button>
+      <button type="button" data-filter="electronics" aria-pressed="false">Electronics</button>
+      <button type="button" data-filter="creative-coding" aria-pressed="false">Creative coding</button>
+      <button type="button" data-filter="illustration" aria-pressed="false">Illustration</button>
+      <button type="button" data-filter="collaboration" aria-pressed="false">Collaboration</button>
+    </div>
+    <div class="work-rows">
+      <a class="work-row" href="index.html#project-2" data-tags="electronics">
+        <div class="work-row-text">
+          <h3>Cinekids</h3>
+          <p class="work-row-sub">Interactive installation, 2026</p>
+          <p class="work-row-desc">BPMaxxing is a physical multiplayer game made for the Cinekids Festival in Amsterdam, responding to the festival’s theme of togetherness.</p>
+        </div>
+        <img src="web/images/CINEKIDS/Screenshot_20261003_233629.webp" alt="Cinekids interactive installation">
+      </a>
+      <a class="work-row" href="index.html#project-1" data-tags="performance electronics">
+        <div class="work-row-text">
+          <h3>Transitions</h3>
+          <p class="work-row-sub">Performance, 2026</p>
+          <p class="work-row-desc">“Transitions” is a performative exploration of identity and belonging, weaving Venezuelan manduco and Basque arina-arina dance into a narrative of cultural in-betweenness. Through movement, garment and technology, the work reclaims the body as a site of radical self-expression, navigating the tension of never being “enough” of one culture. A journey from alienation to empowerment, where dance becomes a tool for reappropriation and freedom.</p>
+        </div>
+        <img src="web/images/transitions/transitions.webp" alt="Transitions">
+      </a>
+      <a class="work-row" href="index.html#project-4" data-tags="3d-modeling">
+        <div class="work-row-text">
+          <h3>Coccinellidae</h3>
+          <p class="work-row-sub">Video installation, 2025</p>
+          <p class="work-row-desc">A room becomes a garden of thoughts, ladybugs, aphids, flies, embody protection, anxiety, and overwhelm as the narrator navigates loneliness, panic, and the slow return to healing, while quietly critiquing mental health care system.</p>
+        </div>
+        <img src="web/images/Coccinellidae/Screenshot_20261012_211321.webp" alt="Coccinellidae">
+      </a>
+      <a class="work-row" href="index.html#project-3" data-tags="performance">
+        <div class="work-row-text">
+          <h3>The light from a void</h3>
+          <p class="work-row-sub">Performance, 2026</p>
+          <p class="work-row-desc">A sensory labyrinth performance exploring intuition, memory and the emotional vulnerability of losing narrative structure.</p>
+        </div>
+        <img src="web/images/The light from a void/Z51_3956.webp" alt="The light from a void">
+      </a>
+      <a class="work-row" href="index.html#project-6" data-tags="collaboration">
+        <div class="work-row-text">
+          <h3>Ecosenda</h3>
+          <p class="work-row-sub">Artistic residency · video, 2025</p>
+          <p class="work-row-desc">Artistic Residency by the student program Ecosenda at Kotla Jarve, Estonia.</p>
+        </div>
+        <img src="web/images/ecosenda/IMG_20250409_144947_00_027.webp" alt="Ecosenda">
+      </a>
+      <a class="work-row" href="index.html#project-7" data-tags="electronics">
+        <div class="work-row-text">
+          <h3>Baby precolombino</h3>
+          <p class="work-row-sub">Ceramics and electronic music</p>
+          <p class="work-row-desc">I imagine a society where past Venezuelan indigenous tribes had access to advanced technology. Inspired by pre-Columbian Venezuelan ceramics, specifically the “Standing Female Anthropomorphic Rattle Figurine”, and traditional instruments like the marimbola. I blend ancestral heritage with futuristic aesthetics.</p>
+        </div>
+        <img src="web/images/baby%20precolombino/Screenshot_20261019_002550.webp" alt="Baby precolombino">
+      </a>
+      <a class="work-row" href="index.html#project-8" data-tags="performance">
+        <div class="work-row-text">
+          <h3>Cyberfeminism</h3>
+          <p class="work-row-sub">Performance, 2025</p>
+          <p class="work-row-desc">Exploring the role of women in technology, questioning the words of “mother-board” while blending with an intimate journey through the female body and natural sounds.</p>
+        </div>
+        <img src="web/images/Cyberfeminism/cyberfeminism_cover.webp" alt="Cyberfeminism performance">
+      </a>
+      <a class="work-row" href="index.html#project-10" data-tags="creative-coding">
+        <div class="work-row-text">
+          <h3>100 days of Hydra</h3>
+          <p class="work-row-sub">Live coding, 2025</p>
+          <p class="work-row-desc">Through daily live coding visuals, Anabel Miryana confronts coding through image creation. The project is a digital mirror aiming to explore and play with geometry and color, blending the real world.</p>
+        </div>
+        <img src="web/images/100 days of hydra/day46.webp" alt="100 days of Hydra">
+      </a>
+      <a class="work-row" href="index.html#project-12" data-tags="performance electronics creative-coding">
+        <div class="work-row-text">
+          <h3>Sensing bodies</h3>
+          <p class="work-row-sub">Video performance, 2024</p>
+          <p class="work-row-desc">This video performance explores the intimacy I have with technology, where interacting with it transforms it into a being that also interacts with me, creating a feedback loop that entangles me inside of this shibari of wires.</p>
+        </div>
+        <img src="web/images/sensing bodies/cover_sensing_bodies.webp" alt="Sensing bodies">
+      </a>
+      <a class="work-row" href="index.html#project-13" data-tags="illustration">
+        <div class="work-row-text">
+          <h3>New mirrors for Venezuela</h3>
+          <p class="work-row-sub">Illustration, 2024</p>
+          <p class="work-row-desc">New mirrors for Venezuela emerges from a process of researching my visual heritage. The project questions how culture and tradition are shaped, appropriated, and manipulated by power. Under authoritarian narratives, history is simplified into heroic myths dominated by male figures, used to legitimize and empower those in control, while women are erased.</p>
+        </div>
+        <img src="web/images/new mirrors for venezuela/New_mirrors_cover.webp" alt="New mirrors for Venezuela">
+      </a>
+    </div>
+  </template>
+
+  <template id="tpl-artist-statement">
+    <div class="text-block">
+      <h2>Artistic research</h2>
+      <!--img class="artist-portrait" src="web/images/Artist Statement/Sensing_bodies_portrait.webp" alt="Anabel Miryana portrait for the artist statement"-->
+      <p>&ldquo;When I emigrated, I left behind the body I had there. I abandoned an identity that I will never get back, forgetting a part of me that was mine and can never be again. Identities I no longer own, but once were.&rdquo;</p>
+      <p>Immigration has been a core theme in my research, and this experience shapes my concepts. I see technology as an immigration process, shaping and taking form in different contexts: we adapt to technology, technology adapts to us, and I adapt to this new reality while carrying my culture with me. I see it as a process where technology becomes a tool to transform identity, rewrite history, or even immigrate into a new digital world. That is where my passion for interactive wearables comes from.</p>
+    </div>
+  </template>
+
+
+  <template id="tpl-about">
+    <div class="about-track">
+    <div class="about-hero">
+    <div class="text-block text-block--about">
+      <h2 class="about-name">Anabel Miryana</h2>
+      <p class="about-subtitle">(she/her) (Venezuela, 2004) (Based in Den Haag)</p>
+      <p class="about-contact">
+        <a href="mailto:anabelmiryana@tutamail.com">anabelmiryana@tutamail.com</a>
+        <a href="https://www.instagram.com/anabelmiryana/" target="_blank" rel="noopener noreferrer">instagram</a>
+        <a href="https://www.youtube.com/channel/UCuigq94woxzgQYbfchGiN1g" target="_blank" rel="noopener noreferrer">youtube</a>
+      </p>
+      <p>I am an interactive artist and designer, building a vision of a future that reflects on our present society. My practice explores poetic-political questions around heritage, identity, movement, sexuality, intimacy, and humanness.</p>
+      <p>In my work, the body becomes a subject of connection and transformation, taking the shape of an instrument, an interface, and a medium through which technology can reimagine the future.</p>
+      <p>I create transdisciplinary artworks mixing performance, sound, installation, illustration, wearable electronics, computer graphics, and creative coding. I use technology to extend the senses, enhance connection, and bridge the physical and digital worlds.</p>
+      <p>Collaboration and community are central to my process, allowing me to build a network with other artists and explore different methodologies, mediums, and fields. I have engaged with the live-coding scene in Rotterdam and Amsterdam, and I have collaborated in medialab spaces such as Tabakalera in San Sebastián.</p>
+    </div>
+      <button class="scroll-hint" type="button" aria-label="Read more" data-page="1">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+          <polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- CV: scroll down from the portrait. Replace the [ ] placeholders with your own details. -->
+    <div class="about-cv-page">
+      <button class="cv-back" type="button" aria-label="Back" data-page="0">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+          <polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="scroll-hint cv-next" type="button" aria-label="Friends" data-page="2">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+          <polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    <section class="about-cv about-cv--grid">
+      <div class="cv-col">
+      <div class="cv-section">
+        <h3>Skills</h3>
+        <p class="cv-list">Performance. Dance. Sound design.<br>
+        Interactive installation. Wearable electronics.<br>
+        Creative coding. Live coding. Electronics.<br>
+        3D modeling. 3D printing. Ceramics.<br>
+        Illustration. Watercolor. Cyanotype.</p>
+      </div>
+      <div class="cv-section">
+        <h3>Software</h3>
+        <p class="cv-list">TouchDesigner. Ableton Live. Arduino IDE.<br>
+        Blender. Hydra. Krita.</p>
+      </div>
+      <div class="cv-section">
+        <h3>Contact</h3>
+        <p class="cv-contact">
+          <a href="mailto:anabelmiryana@tutamail.com">anabelmiryana@tutamail.com</a>
+        <a href="https://www.instagram.com/anabelmiryana/" target="_blank" rel="noopener noreferrer">instagram</a>
+        <a href="https://www.youtube.com/channel/UCuigq94woxzgQYbfchGiN1g" target="_blank" rel="noopener noreferrer">youtube</a>
+        </p>
+      </div>
+      </div>
+      <div class="cv-col">
+      <div class="cv-section">
+        <h3>Work Experience</h3>
+        <div class="cv-row">
+          <span class="cv-date">[Year] -<br>[Year]</span>
+          <div>[Studio / organisation]<br><strong>[Role]</strong><br><small>[CITY]</small></div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3>Education</h3>
+        <div class="cv-row">
+          <span class="cv-date">[Year] -<br>[Year]</span>
+          <div>[Programme]<br><strong>[School]</strong></div>
+        </div>
+      </div>
+      </div>
+      <div class="cv-col">
+      <div class="cv-section">
+        <h3>Performance / Exhibition</h3>
+        <div class="cv-row">
+          <span class="cv-date">2026</span>
+          <div><strong>Transitions</strong><br>Performance @Patch Studio</div>
+        </div>
+        <div class="cv-row">
+          <span class="cv-date">2026</span>
+          <div><strong>The light from a void</strong><br>Performance @Korzo Theater, Den Haag, NL</div>
+        </div>
+        <div class="cv-row">
+          <span class="cv-date">2026</span>
+          <div><strong>BPMaxxing</strong><br>Interactive installation @Cinekids Festival, Amsterdam, NL</div>
+        </div>
+        <div class="cv-row">
+          <span class="cv-date">2025</span>
+          <div><strong>Ecosenda</strong><br>Artistic residency @Kohtla-Järve, EE</div>
+        </div>
+        <div class="cv-row">
+          <span class="cv-date">2025</span>
+          <div><strong>Cyberfeminism</strong><br>Performance @Royal Academy of Art (KABK), Den Haag, NL</div>
+        </div>
+      </div>
+      </div>
+    </section>
+    </div>
+    <div class="about-cv-page">
+      <button class="cv-back" type="button" aria-label="Back" data-page="1">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+          <polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <section class="about-cv">
+        <!-- Friends: replace the [ ] placeholders with your friends' names and links -->
+        <div class="cv-section cv-friends">
+          <h3>Friends</h3>
+          <ul class="cv-list cv-friends-list">
+            <li><a href="#" target="_blank" rel="noopener noreferrer">[Friend name]</a></li>
+            <li><a href="#" target="_blank" rel="noopener noreferrer">[Friend name]</a></li>
+            <li><a href="#" target="_blank" rel="noopener noreferrer">[Friend name]</a></li>
+          </ul>
+          <p class="cv-friends-credit">VR chat picture</p>
+        </div>
+      </section>
+    </div>
+    </div>
+  </template>
+
+  <script>
+    // Works: pictures fade in slowly as they scroll into view (and again when scrolling back)
+    var workImageObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      });
+    }, {
+      threshold: 0.12
+    }) : null;
+
+    function watchWorkImages() {
+      if (!workImageObserver) return;
+      workImageObserver.disconnect();
+      document.querySelectorAll('#info-content .work-row img').forEach(function (img) {
+        img.classList.add('reveal');
+        workImageObserver.observe(img);
+      });
+    }
+
+    // Home: close any open window and go back to the home screen
+    function goHome() {
+      if (!infoOverlay.hidden) closeInfo();
+    }
+
+    var infoOverlay = document.getElementById('info-overlay');
+    var infoWindow = document.getElementById('info-window');
+    var infoContent = document.getElementById('info-content');
+    var lastTrigger = null;
+    var closeTimer = null;
+
+    function openInfo(key, trigger) {
+      var tpl = document.getElementById('tpl-' + key);
+      if (!tpl) return;
+
+      if (closeTimer) { window.clearTimeout(closeTimer); closeTimer = null; }
+
+      lastTrigger = trigger || null;
+      infoContent.innerHTML = '';
+      infoContent.appendChild(tpl.content.cloneNode(true));
+      watchWorkImages();
+      infoWindow.classList.toggle('info-window--about', key === 'about');
+      var fullPage = key === 'about' || key === 'work' || key === 'artist-statement';
+      infoOverlay.classList.toggle('info-overlay--full', fullPage);
+      document.body.classList.toggle('full-open', fullPage);
+
+      document.body.classList.add('window-open');
+      infoOverlay.scrollTop = 0;
+      siteHeader.style.transform = '';
+      infoOverlay.hidden = false;
+      void infoOverlay.offsetWidth; // force reflow so the transition plays
+      infoOverlay.classList.add('is-open');
+
+      document.querySelectorAll('[aria-controls="info-overlay"]').forEach(function (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+      });
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      infoWindow.focus({ preventScroll: true });
+    }
+
+    function closeInfo() {
+      infoOverlay.classList.remove('is-open');
+      document.querySelectorAll('[aria-controls="info-overlay"]').forEach(function (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+      });
+      closeTimer = window.setTimeout(function () {
+        closeTimer = null;
+        infoOverlay.hidden = true;
+        infoContent.innerHTML = '';
+        document.body.classList.remove('window-open');
+        siteHeader.style.transform = '';
+        infoOverlay.classList.remove('info-overlay--full');
+        document.body.classList.remove('full-open');
+      }, 300);
+      if (lastTrigger) lastTrigger.focus();
+    }
+
+    // The menu is not pinned: when a window scrolls, the menu moves up with the page and goes out of view
+    var siteHeader = document.querySelector('.site-header');
+    infoOverlay.addEventListener('scroll', function () {
+      siteHeader.style.transform = 'translateY(' + (-infoOverlay.scrollTop) + 'px)';
+    }, { passive: true });
+
+    infoContent.addEventListener('click', function (event) {
+      // About has three pages side by side: each arrow scrolls to the page it names
+      var arrow = event.target.closest('[data-page]');
+      if (arrow) goToPage(infoContent.querySelector('.about-track'), Number(arrow.dataset.page));
+    });
+    function goToPage(track, page) {
+      track.scrollTo({ left: page * track.clientWidth, behavior: 'smooth' });
+    }
+    // Works labels: show only the works with that skill; All, or pressing it again, shows them all
+    infoContent.addEventListener('click', function (event) {
+      var label = event.target.closest('[data-filter]');
+      if (!label) return;
+      var on = label.dataset.filter !== 'all' && label.getAttribute('aria-pressed') !== 'true';
+      var active = on ? label : infoContent.querySelector('[data-filter="all"]');
+      infoContent.querySelectorAll('[data-filter]').forEach(function (b) {
+        b.setAttribute('aria-pressed', b === active ? 'true' : 'false');
+      });
+      infoContent.querySelectorAll('.work-row').forEach(function (row) {
+        var match = !on || row.dataset.tags.split(' ').indexOf(label.dataset.filter) !== -1;
+        row.classList.toggle('is-hidden', !match);
+      });
+      infoOverlay.scrollTop = 0;
+    });
+    infoOverlay.addEventListener('click', function (event) {
+      if (event.target === infoOverlay) closeInfo();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !infoOverlay.hidden) closeInfo();
+    });
+
+    // Focus trap: keep Tab focus inside the open dialog
+    function isFocusable(el) {
+      if (!el || el.disabled) return false;
+      var tag = el.tagName;
+      if (tag === 'A') return !!el.href;
+      if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return true;
+      if (el.tabIndex > 0) return true;
+      return false;
+    }
+
+    function getTrapFocusables() {
+      var list = Array.prototype.slice.call(
+        infoOverlay.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
+      );
+      // The top menu stays visible and usable in every window
+      list = Array.prototype.slice.call(document.querySelectorAll('.menu .menu-item')).concat(list);
+      return list.filter(isFocusable);
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Tab' || infoOverlay.hidden || !infoOverlay.classList.contains('is-open')) return;
+      var focusables = getTrapFocusables();
+      if (focusables.length === 0) {
+        event.preventDefault();
+        infoWindow.focus();
+        return;
+      }
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      var active = document.activeElement;
+      var inside = focusables.indexOf(active) !== -1;
+      if (event.shiftKey) {
+        if (active === first || !inside) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !inside) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    // Si llegamos con #work, #about, #artist-statement (desde un proyecto), abrir ese popup
+    var hashKey = window.location.hash.slice(1);
+    if (['work', 'about', 'artist-statement'].indexOf(hashKey) !== -1) {
+      openInfo(hashKey, document.getElementById('nav-' + hashKey));
+    }
+  </script>
+
+<script>
+  /* Videos have no controls, so make sure they start: try now, and again on the first click, key, touch or scroll
+     (some browsers block autoplay until the visitor interacts with the page) */
+  (function () {
+    function playAll() {
+      document.querySelectorAll('video').forEach(function (v) {
+        v.muted = true;
+        if (v.paused && v.offsetParent !== null) {
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      });
+    }
+    playAll();
+    window.addEventListener('load', playAll);
+    ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'].forEach(function (type) {
+      window.addEventListener(type, playAll, { passive: true, capture: true });
+    });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) playAll(); });
+  })();
+</script>
+<script src="cat.js"></script>
+</body>
+</html>

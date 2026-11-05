@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Anabel Miryana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+ @font-face {
+  font-family: 'terminal-grotesque';
+  src: url('fonts/terminal-grotesque.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.project-layout{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.project-layout img{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 700px){
+  .project-layout{ grid-template-columns: 1fr; }
+
+  .section{
+    padding: 4.5rem 1.25rem 5rem;
+    align-items: flex-start;
+  }
+
+  .symbol-list{
+    width: min(92vw, 420px);
+    gap: 0.55rem;
+  }
+
+  .symbol-list button{
+    padding: 0.7rem 0.9rem;
+  }
+}
+
+:root{
+  --bg: #f4efe6;
+  --ink: #111111;
+  --muted: #5a5a5a;
+  --accent: #1a1a1a;
+}
+
+*{
+  box-sizing: border-box;
+  cursor: auto;
+}
+
+html{
+  background: var(--bg);
+}
+
+body{
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: #000000;
+}
+
+/* ---------- Fondo shader (solo en home) ---------- */
+#home-background-video{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+#home-background-video.visible{
+  opacity: 1;
+}
+
+#bg-canvas{
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+}
+
+#bg-canvas.visible{
+  opacity: 0;
+}
+
+/* Canvas del efecto pixel-reveal sobre la foto de "Sensing bodies" */
+#pixel-reveal-canvas{
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#pixel-reveal-canvas.visible{
+  opacity: 1;
+}
+
+/* La imagen real queda invisible: solo alimenta la textura de WebGL */
+.text-block[data-work="22"] figure img{
+  opacity: 0;
+}
+
+/* Fondo estático simple para el resto de las secciones */
+body.static-bg{
+  background: var(--bg);
+}
+
+/* ---------- Navegación de esquinas (brújula) ---------- */
+.compass{
+  position: static;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: var(--pixel-cursor);
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.compass-navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(0.2rem, 1.1vw, 1rem);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Botón para volver al listado de works ---------- */
+.work-detail-close {
+  position: fixed;
+  top: 1rem;
+  right: 1.25rem;
+  z-index: 30;
+  border: 0;
+  background: transparent;
+  color: #000000;
+  font-family: 'terminal-grotesque', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.75;
+  padding: 0.4rem 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.work-detail-close:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.home-active .compass-navigation {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.compass span.symbol{
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.nav-pixel-icon {
+  display: block;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+}
+
+.about-me-icon {
+  width: 2.7rem;
+  height: 2.7rem;
+}
+
+.contact-pixel-icon {
+  width: 2.7rem;
+  height: 2.7rem;
+}
+
+.artist-statement-pixel-icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.compass:hover{ color: var(--accent); }
+.compass:hover span.symbol{ color: var(--accent); }
+
+.compass.active{ color: var(--accent); }
+.compass.active span.symbol{ color: var(--accent); }
+
+@media (max-width: 600px) {
+  .compass {
+    padding: 0.85rem 0.45rem;
+    font-size: 0.68rem;
+  }
+}
+
+#nav-home,
+#nav-work,
+#nav-artist-statement,
+#nav-about,
+#nav-contact,
+#nav-home span.symbol,
+#nav-work span.symbol,
+#nav-artist-statement span.symbol,
+#nav-about span.symbol,
+#nav-contact span.symbol {
+  color: #000000;
+}
+
+#nav-home:hover,
+#nav-work:hover,
+#nav-artist-statement:hover,
+#nav-about:hover,
+#nav-contact:hover,
+#nav-home:hover span.symbol,
+#nav-work:hover span.symbol,
+#nav-artist-statement:hover span.symbol,
+#nav-about:hover span.symbol,
+#nav-contact:hover span.symbol {
+  color: var(--accent);
+}
+
+/* ---------- Secciones ---------- */
+.section{
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  padding: 4rem 2rem;
+  z-index: 0;
+}
+
+.section.active{
+  opacity: 1;
+  pointer-events: auto;
+  /* "none" (not translateY(0)): any transform here would make the pinned top menu scroll away with the page */
+  transform: none;
+  max-height: 100vh;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+#home,
+#work{
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 2rem 1.5rem 0 0;
+}
+
+#home > *,
+#work > * {
+  width: min(36vw, 420px);
+  max-width: 420px;
+}
+
+#home h1,
+#work .symbol-list {
+  margin-left: auto;
+  text-align: right;
+}
+
+#work {
+  align-items: center;
+  justify-content: center;
+}
+
+#home {
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.contact-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: start center;
+  padding: clamp(5rem, 12vh, 8rem) 1.25rem 1.25rem;
+  background: rgba(244, 239, 230, 0.12);
+}
+
+.contact-overlay[hidden] {
+  display: none;
+}
+
+.contact-overlay-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  width: min(82vw, 1100px);
+  min-height: 112px;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 0, 0, 0.32);
+  background: rgba(238, 238, 240, 0.72);
+  color: #161616;
+}
+
+.contact-overlay-panel h2 {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.contact-overlay-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.55rem;
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: #161616;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: var(--pixel-cursor);
+}
+
+.contact-overlay-links {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
+}
+
+.contact-overlay-links a {
+  color: #161616;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  .contact-overlay-panel {
+    width: min(100%, 420px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 2.5rem 1.25rem 1.25rem;
+  }
+
+  .contact-overlay-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+}
+
+#home > * {
+  width: auto;
+  max-width: none;
+}
+
+/* Home */
+#home h1{
+  font-family: 'terminal-grotesque', sans-serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.02em;
+  cursor: var(--pixel-cursor);
+  margin: 0;
+  text-align: center;
+  color: #000000;
+}
+
+#home h1 span{
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.8rem;
+}
+
+/* Listas de trabajo / galería visual grande */
+#work {
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.work-layout{
+  width: min(94vw, 1480px);
+  max-height: calc(100vh - 8rem);
+  margin: 0 auto;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.section.active {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.work-layout::-webkit-scrollbar,
+.section.active::-webkit-scrollbar {
+  display: none;
+}
+
+#work > .work-layout{
+  width: min(94vw, 1480px);
+  max-width: 1480px;
+}
+
+.symbol-list{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem 1.2rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.symbol-list .work-card{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ink);
+  font-family: Georgia, serif;
+  text-align: left;
+  cursor: var(--pixel-cursor);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.symbol-list .work-card:hover{
+  transform: translateY(-2px);
+}
+
+.symbol-list .work-card img{
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #efece7;
+}
+
+.symbol-list .work-card video,
+.symbol-list .work-card .work-card-placeholder{
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #e9e7e3;
+}
+
+.symbol-list .work-card span{
+  display: block;
+  width: 100%;
+  font-size: clamp(1rem, 1.1vw, 1.25rem);
+  line-height: 1.25;
+  color: #000000;
+  font-style: italic;
+}
+
+.symbol-list .work-card .work-card-category {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  color: rgba(0, 0, 0, 0.65);
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.symbol-list .work-card:hover span{
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 700px){
+  #work{ padding: 4.5rem 1.25rem; }
+  #work > .work-layout{ width: 100%; max-height: calc(100vh - 7rem); }
+  .symbol-list{ grid-template-columns: 1fr; gap: 1.25rem; }
+}
+
+/* Contenido de texto simple (artist statement / contact) */
+.text-block{
+  max-width: 860px;
+  text-align: left;
+  line-height: 1.5;
+  color: rgba(17, 17, 17, 0.9);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.95rem, 1.2vw, 1.3rem);
+}
+
+.text-block h2{
+  font-weight: 700;
+  font-size: clamp(1.7rem, 2.2vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+  color: #111111;
+}
+
+.text-block a{
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Detalle de una pieza de trabajo individual */
+#work-detail{
+  align-items: flex-start;
+}
+
+#work-detail .text-block{ display: none; }
+#work-detail .text-block.active{ display: block; margin: clamp(7rem, 14vh, 8.5rem) auto 4rem; width: min(94vw, 1600px); max-width: 1600px; color: #000000; }
+
+/* ---------- Menú superior en las páginas de proyecto (igual que home2) ---------- */
+.detail-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: clamp(1.1rem, 4vh, 2.25rem) clamp(1.25rem, 6vw, 6rem) 1rem;
+  background: linear-gradient(var(--bg) 60%, rgba(244, 239, 230, 0));
+}
+
+.detail-menu-item {
+  font-family: 'terminal-grotesque', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #000000;
+  font-size: clamp(0.95rem, 2.2vw, 1.85rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.detail-menu-item:hover {
+  color: #ff5fa2;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 560px) {
+  .detail-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .detail-menu-item {
+    font-size: 1rem;
+  }
+}
+
+/* El menú de iconos antiguo no se muestra en las páginas de proyecto */
+body.detail-active .compass-navigation {
+  display: none;
+}
+
+#work-detail .text-block p,
+#work-detail .text-block audio,
+#work-detail .text-block .blue-title-block {
+  width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#work-detail .text-block,
+#work-detail .text-block h2,
+#work-detail .text-block p,
+#work-detail .text-block a,
+#work-detail .text-block strong,
+#work-detail .text-block .blue-title-kicker,
+#work-detail .text-block .blue-title-block h2 {
+  color: #000000;
+}
+
+.blue-title-block {
+  margin: 0 0 1.5rem;
+}
+
+.blue-title-kicker {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 0.55rem;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.blue-title-block h2 {
+  margin: 0;
+  color: #000000;
+  font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.feature-video {
+  margin: 1.4rem auto 1.8rem;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: none;
+  width: min(100%, 1280px);
+}
+
+.feature-video video {
+  display: block;
+  width: 100%;
+  max-height: 84vh;
+  object-fit: cover;
+  background: var(--bg);
+}
+
+.video-credit {
+  margin: 0.45rem 0 0;
+  text-align: right;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.feature-image {
+  width: min(100%, 1280px);
+  margin: 0 auto 1.8rem;
+}
+
+.feature-image img {
+  display: block;
+  width: 100%;
+  max-height: 84vh;
+  height: auto;
+  object-fit: cover;
+}
+
+.transitions-layout {
+  width: min(96vw, 1480px);
+  max-width: 1480px;
+}
+
+.transitions-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 6vw, 8rem);
+  width: 100%;
+}
+
+/* Left: picture; right: title, summary, credits, text (both scroll with the page) */
+.transitions-visuals {
+  min-width: 0;
+}
+
+.transitions-visuals .transitions-image img {
+  max-height: calc(100vh - clamp(7rem, 16vh, 9rem));
+  object-fit: contain;
+  object-position: top left;
+}
+
+/* Below the text: the video in the middle, then the other pictures */
+/* Big centred video (and big single pictures): ~73% of the screen width, like the Vimeo example (1400px on a 1920px screen) */
+.transitions-video {
+  width: min(100%, var(--content));
+  margin: clamp(4rem, 10vh, 7rem) auto clamp(3rem, 8vh, 5rem);
+}
+
+/* The long text, centred at the end of the page */
+.transitions-essay {
+  width: min(100%, 760px);
+  margin: clamp(4rem, 10vh, 7rem) auto 0;
+}
+
+#work-detail .transitions-essay p {
+  width: 100%;
+  margin: 0 0 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* Credit under the video: no black strip, left corner, bigger and readable */
+.transitions-video {
+  background: transparent;
+}
+
+/* Show the whole video frame at the big size (no height limit, no cropping) */
+.transitions-video video {
+  max-height: none;
+  height: auto;
+  object-fit: contain;
+}
+
+#work-detail .transitions-video .video-credit,
+#work-detail .transitions-visuals .video-credit,
+#work-detail .transitions-image figcaption.video-credit {
+  width: 100%;
+  margin: 1.25rem 0 0;
+  text-align: left;
+  font-family: 'terminal-grotesque', monospace;
+  font-size: clamp(0.9rem, 1vw, 1.05rem);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.transitions-video + .transitions-video {
+  margin-top: 0;
+}
+
+.transitions-video img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#work-detail .transitions-video .video-credit + .video-credit {
+  margin-top: 0.3rem;
+}
+
+/* Short centred passage in the middle of the page */
+.transitions-quote {
+  width: min(100%, 820px);
+  margin: clamp(4rem, 12vh, 7rem) auto;
+  text-align: center;
+}
+
+#work-detail .transitions-quote p {
+  width: 100%;
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.15rem, 1.6vw, 1.6rem);
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.92);
+}
+
+/* Text on the left, one big picture on the right */
+.transitions-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 8rem);
+  align-items: center;
+  margin: clamp(3rem, 8vh, 5rem) 0;
+}
+
+#work-detail .transitions-split-text p {
+  width: 100%;
+  margin: 0 0 1rem;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.transitions-split .transitions-image img {
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+/* Every other row flips: picture left, text right */
+.transitions-split--reverse .transitions-split-text {
+  order: 2;
+}
+
+.transitions-split + .transitions-pair {
+  margin-top: clamp(4rem, 12vh, 8rem);
+}
+
+.transitions-pair + .transitions-split,
+.transitions-split + .transitions-split {
+  margin-top: clamp(4rem, 12vh, 8rem);
+}
+
+/* The questions inside the text stand out a little */
+#work-detail .transitions-split-text .transitions-question {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+  line-height: 1.35;
+  color: #000000;
+}
+
+@media (max-width: 900px) {
+  .transitions-split {
+    grid-template-columns: 1fr;
+  }
+  .transitions-split--reverse .transitions-split-text {
+    order: 0;
+  }
+}
+
+/* Two big pictures side by side */
+.transitions-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+  align-items: center;
+  width: min(100%, 1100px);
+  margin: 0 auto clamp(3rem, 8vh, 5rem);
+}
+
+.transitions-pair--portrait img {
+  aspect-ratio: 7 / 10;
+  object-fit: cover;
+}
+
+/* Pictures of different heights sit centred in their row */
+#work-detail .transitions-gallery.transitions-gallery--centered {
+  align-items: center;
+}
+
+/* Text block as wide as the video above it */
+.transitions-essay--wide {
+  width: min(100%, var(--content));
+}
+
+.transitions-essay--middle {
+  margin: 0 auto clamp(3rem, 8vh, 5rem);
+}
+
+/* Sub-work inside a project: big question, divider, short text, its own pictures */
+.subwork {
+  margin: clamp(5rem, 14vh, 9rem) 0 0;
+  padding-top: clamp(3rem, 8vh, 5rem);
+}
+
+#work-detail .subwork-question {
+  width: min(100%, 1100px);
+  margin: 0 auto 0.75rem;
+  text-align: center;
+  font-size: clamp(1.8rem, 3.6vw, 3.4rem);
+  line-height: 1.1;
+  color: #000000;
+}
+
+#work-detail .subwork .text-divider {
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.subwork-text {
+  width: min(100%, 760px);
+  margin: 0 auto clamp(2.5rem, 6vh, 4rem);
+}
+
+#work-detail .subwork-text p {
+  width: 100%;
+  margin: 0 0 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.transitions-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+  align-items: start;
+}
+
+.transitions-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#work-detail .transitions-copy .blue-title-block {
+  width: 100%;
+  margin: 0 0 1.5rem;
+}
+
+#work-detail .transitions-copy p {
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0 0 1rem;
+}
+
+.transitions-meta {
+  display: flex;
+  flex-direction: column;
+  margin: 0.75rem 0 2.5rem;
+}
+
+#work-detail .transitions-meta p {
+  margin: 0;
+  padding: 0.55rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.transitions-image {
+  margin: 0;
+  display: block;
+  min-width: 0;
+}
+
+.transitions-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sensing-bodies-layout {
+  width: min(96vw, 1480px);
+  max-width: 1480px;
+}
+
+.sensing-bodies-video-wrapper {
+  position: relative;
+}
+
+.sensing-bodies-title-overlay {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 2;
+  max-width: min(70%, 540px);
+}
+
+.sensing-bodies-title-overlay .blue-title-kicker {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.sensing-bodies-title-overlay h2 {
+  margin: 0;
+  color: #000000;
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.sensing-bodies-row {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1.1fr);
+  align-items: start;
+  gap: clamp(1.5rem, 2.2vw, 3rem);
+  width: 100%;
+}
+
+.sensing-bodies-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 0.35rem;
+}
+
+.sensing-bodies-summary {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0 0 1.25rem;
+}
+
+.project-meta-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 0.25rem 1rem;
+  box-sizing: border-box;
+}
+
+.project-meta-box p {
+  margin: 0;
+  padding: 0.7rem 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.project-meta-box p + p {
+}
+
+.cinekids-video-wrap {
+  position: relative;
+}
+
+.cinekids-video-credit {
+  position: absolute;
+  right: 0;
+  bottom: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  text-align: right;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.8);
+  background: rgba(244, 239, 230, 0.18);
+  padding: 0.3rem 0.4rem;
+}
+
+.cinekids-video-credit p {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.cinekids-copy-box {
+  width: min(100%, 760px);
+  margin: 0 auto 1.6rem;
+  padding-top: 0.2rem;
+}
+
+.project-copy-box {
+  width: min(100%, 760px);
+  margin: 1.5rem auto;
+  padding: 1rem 1.1rem 1.2rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+}
+
+.project-copy-box p {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.cinekids-copy-box.project-copy-box {
+  margin: 0 auto 1.6rem;
+}
+
+.cinekids-media-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+  align-items: start;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  width: 100%;
+  margin: 0 auto 1.5rem;
+}
+
+.cinekids-media-row .blue-title-block {
+  width: 100%;
+}
+
+.cinekids-media-row .feature-video {
+  margin: 0;
+}
+
+.cinekids-media-row .cinekids-copy-box {
+  margin: 0;
+}
+
+@media (max-width: 820px) {
+  .cinekids-media-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cinekids-copy-box .cinekids-summary {
+  margin: 0 0 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.cinekids-copy-box .cinekids-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cinekids-copy-box .cinekids-meta p {
+  margin: 0;
+  padding-top: 0.7rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.sensing-bodies-photo {
+  margin: 0;
+  display: block;
+  min-width: 0;
+}
+
+.sensing-bodies-photo img {
+  display: block;
+  width: 100%;
+  height: clamp(420px, 58vh, 760px);
+  object-fit: cover;
+  background: #d9d7d1;
+}
+
+.sensing-bodies-photo figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .transitions-row,
+  .sensing-bodies-row,
+  .transitions-gallery,
+  .transitions-pair {
+    grid-template-columns: 1fr;
+  }
+
+  #work-detail .transitions-copy p,
+  .sensing-bodies-summary {
+    font-size: 1rem;
+  }
+
+  .sensing-bodies-photo img {
+    height: 420px;
+  }
+}
+
+#artist-statement {
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0 2rem;
+  background: var(--bg);
+}
+
+#artist-statement .text-block {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 1.5rem 2rem 2rem;
+  max-width: 1100px;
+  width: min(82vw, 1100px);
+  margin: 0 auto;
+  text-align: center;
+  color: #000000;
+}
+
+#artist-statement .text-block h2,
+#artist-statement .text-block p,
+#artist-statement .text-block a {
+  color: #000000;
+}
+
+#about {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 3rem 0 2rem 1.5rem;
+  background-image:
+    linear-gradient(rgba(244, 239, 230, 0.2), rgba(244, 239, 230, 0.5)),
+    url('web/images/Artist Statement/Sensing_bodies_portrait.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#about .text-block {
+  background: rgba(244, 239, 230, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 1.5rem 2rem 2rem;
+  max-width: 1100px;
+  width: min(82vw, 1100px);
+  margin-left: 0;
+  margin-top: 0.5rem;
+  text-align: left;
+  color: #000000;
+}
+
+#about .text-block h2,
+#about .text-block p,
+#about .text-block a {
+  color: #000000;
+}
+
+.back-link{
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.home-link{
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 0.55rem 0.9rem;
+  cursor: var(--pixel-cursor);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.back-link:hover{ color: var(--accent); }
+.home-link:hover{ color: var(--accent); border-color: var(--accent); }
+
+footer{
+  position: fixed;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  z-index: 5;
+}
+
+/* ---------- Ensayo de proyecto con varias imágenes ---------- */
+.project-essay{
+  max-width: 640px;
+  margin: 4rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  text-align: left;
+}
+
+.project-essay .chapter-mark{
+  color: var(--accent);
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.project-essay figure{
+  margin: 0;
+}
+
+.project-essay img{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.project-essay figcaption{
+  font-family: Arial, sans-serif;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.image-row{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+body, body * {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+/* Small label (e.g. "Video performance") goes below the project title */
+#work-detail .blue-title-block {
+  display: flex;
+  flex-direction: column;
+}
+
+#work-detail .blue-title-block .blue-title-kicker {
+  order: 2;
+  margin: 0.75rem 0 0;
+}
+
+/* ---------- Menu bar: no tint or line, no blur ---------- */
+.site-header,
+.detail-menu {
+  padding-top: clamp(0.9rem, 2.6vh, 1.4rem) !important;
+  padding-bottom: clamp(0.9rem, 2.6vh, 1.4rem) !important;
+  background: none !important;
+  border-bottom: 0;
+}
+
+.menu,
+.detail-menu {
+  align-items: center !important;
+}
+
+.menu-item,
+.detail-menu-item {
+  position: relative;
+  padding: 0.5em 0 !important;
+  border: 0 !important;
+  background: none !important;
+  transform: none !important;
+  transition: color 0.3s ease !important;
+}
+
+/* ---------- Project videos: normal player controls (play, timeline, volume), no pop-out ---------- */
+#work-detail video {
+  pointer-events: auto;
+}
+
+/* ---------- Pictures and videos fade in slowly as you scroll to them ---------- */
+.reveal-ready #work-detail .reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.reveal-ready #work-detail .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready #work-detail .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Zoom: clicking a project picture opens it full screen ---------- */
+#work-detail .text-block img {
+  cursor: zoom-in;
+}
+
+.image-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(244, 239, 230, 0.94);
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.image-zoom.is-open {
+  opacity: 1;
+}
+
+.image-zoom[hidden] {
+  display: none;
+}
+
+.image-zoom img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform: scale(0.97);
+  transition: transform 0.25s ease;
+}
+
+.image-zoom.is-open img {
+  transform: scale(1);
+}
+
+/* ---------- Landing: looping video with the name; click the name to enter home2.html ---------- */
+#home-background-video {
+  filter: saturate(1.25) contrast(1.05);
+}
+
+#home h1 .home-enter {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#home h1 .home-enter:hover,
+#home h1 .home-enter:focus-visible {
+  color: #ff5fa2;
+}
+
+/* Landing page: white text on the video (the same footer stays grey on the beige project pages) */
+body:has(#home.active) footer {
+  color: #ffffff;
+}
+
+/* The whole landing screen is clickable, not only the name */
+body.home-active #home {
+  cursor: pointer;
+}
+
+/* ---------- Project pages: menu + contact line in one fixed top area (same as home2) ---------- */
+/* Not pinned: it sits at the top of the page and scrolls away with it (like the example) */
+.detail-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(0.9rem, 2.6vh, 1.4rem) clamp(1.25rem, 6vw, 6rem);
+  background: var(--bg);
+}
+
+.detail-header .detail-menu {
+  position: static;
+  padding: 0 !important;
+  background: none !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Contact line under the menu that scrolls sideways in a loop (text only) */
+.contact-ticker {
+  width: 100%;
+  margin: 0;
+  padding: 0.7rem 0;
+  overflow: hidden;
+  font-size: clamp(0.9rem, 1vw, 1.05rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.contact-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: contact-ticker 35s linear infinite;
+}
+
+.contact-ticker:hover .contact-ticker-track {
+  animation-play-state: paused;
+}
+
+.contact-ticker-group {
+  display: flex;
+  white-space: nowrap;
+}
+
+/* Each item takes about a fifth of the screen: wide spacing, but not too empty */
+.contact-ticker-group > span {
+  flex: 0 0 auto;
+  min-width: 22vw;
+  padding-right: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.contact-ticker a {
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.contact-ticker a:hover {
+  color: #ff5fa2;
+}
+
+@keyframes contact-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-ticker-track { animation: none; }
+}
+
+
+/* Menu words: capital letter only at the beginning */
+.detail-menu-item {
+  text-transform: none !important;
+}
+
+/* Menu: Home + About on the left, Works then Artistic research on the right */
+.detail-menu .detail-menu-item:nth-child(2) {
+  margin-left: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.detail-menu .detail-menu-item:nth-child(3) {
+  margin-left: auto;
+  margin-right: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+/* On a phone: smaller gaps so the menu stays on one line */
+@media (max-width: 600px) {
+  .detail-menu-item { font-size: 0.8rem !important; }
+  .detail-menu .detail-menu-item:nth-child(2) { margin-left: 0.8rem; }
+  .detail-menu .detail-menu-item:nth-child(3) { margin-right: 0.8rem; }
+}
+
+
+
+/* ---------- Project intro: big title on the left, description + details on the right (no cover picture) ---------- */
+.transitions-row.project-intro {
+  width: min(100%, var(--content));
+  margin: clamp(4rem, 14vh, 9rem) auto clamp(4rem, 14vh, 9rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.07fr);
+  gap: 4vw;
+  align-items: start;
+}
+
+#work-detail .project-title-col .blue-title-block {
+  width: 100%;
+  margin: 0;
+}
+
+#work-detail .project-title-col .blue-title-block h2 {
+  font-size: clamp(2.6rem, 4.2vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+@media (max-width: 900px) {
+  .transitions-row.project-intro {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- One grid for the whole project page: everything shares the video's edges (73% of the width) ---------- */
+#work-detail .transitions-essay,
+#work-detail .transitions-essay--wide,
+#work-detail .project-credits,
+#work-detail .transitions-gallery,
+#work-detail .transitions-pair,
+#work-detail .transitions-split,
+#work-detail .transitions-quote,
+#work-detail .subwork,
+#work-detail .subwork-text,
+#work-detail .subwork-question {
+  width: min(100%, var(--content));
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Text keeps to the left edge of the grid (like the example), quotes and questions stay centred */
+#work-detail .transitions-essay,
+#work-detail .subwork-text {
+  text-align: left;
+}
+
+/* =========================================================
+   COHESIVE LAYOUT: same beige background and same grid as home2.
+   --edge = the margin on both sides of everything
+========================================================= */
+:root { --bg: #f4efe6; --edge: 4vw; --content: 73vw; } /* --content: width of videos, titles and texts (13.5% margin each side, like the Afroditi Psarra example) */
+html, body, body.static-bg { background: var(--bg); }
+.detail-header {
+  background: var(--bg) !important;
+  padding-left: var(--edge) !important;
+  padding-right: var(--edge) !important;
+}
+#work-detail {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+#work-detail .text-block.active {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+
+/* Everything you can click shows the hand */
+a[href], a[href] *, button, button * {
+  cursor: pointer;
+}
+
+/* Home sits in the exact middle of the menu; About moves to the left edge */
+.detail-header .detail-menu { position: relative; }
+.detail-menu .detail-menu-item:nth-child(1) {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
+.detail-menu .detail-menu-item:nth-child(2) { margin-left: 0; }
+@media (max-width: 600px) {
+  .detail-menu .detail-menu-item:nth-child(1) { position: relative !important; margin: 0 0 0 0.8rem; order: 1; }
+  .detail-menu .detail-menu-item:nth-child(2) { order: 0; }
+  .detail-menu .detail-menu-item:nth-child(3) { order: 2; }
+  .detail-menu .detail-menu-item:nth-child(4) { order: 3; }
+}
+
+/* Previous / next work: the arrow tips sit on the same margins as the menu.
+   The -18px cancels the empty space inside the icon, so the drawn arrow lines up, not its box. */
+.project-arrow {
+  position: fixed;
+  top: 47%;
+  z-index: 20;
+  padding: 0.5rem;
+  color: #000000;
+  transition: color 0.25s ease;
+}
+.project-arrow:hover,
+.project-arrow:focus-visible { color: #ff5fa2; }
+.project-arrow:focus { outline: none; }
+.project-arrow svg { display: block; }
+.project-arrow--prev { left: calc(var(--edge) - 18px); }
+.project-arrow--prev svg { transform: rotate(90deg); }
+.project-arrow--next { right: calc(var(--edge) - 18px); }
+.project-arrow--next svg { transform: rotate(-90deg); }
+@media (max-width: 900px) {
+  .project-arrow {
+    top: auto;
+    bottom: clamp(1rem, 4vh, 2.25rem);
+    background: var(--bg);
+  }
+  .project-arrow--prev { left: var(--edge); }
+  .project-arrow--next { left: auto; right: var(--edge); }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body class="home-active">
+
+  <video id="home-background-video" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback>
+    <source src="mp4/VIDEO%20LOOP%20web.mp4" type="video/mp4">
+  </video>
+
+  <!-- Canvas del efecto shader (Three.js), solo visible en home -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Canvas del efecto pixel-reveal, solo para la foto de "Sensing bodies" -->
+  <canvas id="pixel-reveal-canvas"></canvas>
+
+  <!-- Main navigation -->
+  <nav class="compass-navigation" aria-label="Main navigation">
+    <button class="compass" id="nav-work" onclick="loadSection('work')"><img class="nav-pixel-icon" src="web/images/directory_closed-4.webp" alt="" aria-hidden="true"> </button>
+    <button class="compass" id="nav-artist-statement" onclick="loadSection('artist-statement')"><img class="nav-pixel-icon artist-statement-pixel-icon" src="web/images/computer-5.webp" alt="" aria-hidden="true"> artist statement</button>
+    <button class="compass" id="nav-contact" type="button" aria-haspopup="dialog" aria-controls="contact-overlay" aria-expanded="false" onclick="toggleContactOverlay()"><img class="nav-pixel-icon contact-pixel-icon" src="web/images/outlook_express-4.webp" alt="" aria-hidden="true"> contact</button>
+    <button class="compass" id="nav-home" onclick="loadSection('home')"><span class="symbol">◐</span> home</button>
+    <button class="compass" id="nav-about" onclick="loadSection('about')"><img class="nav-pixel-icon about-me-icon" src="web/images/notepad-2.webp" alt="" aria-hidden="true"> about me</button>
+  </nav>
+
+  <!-- Home -->
+<div id="home" class="section active">
+     <h1><a class="home-enter" href="home2.html">ANABEL MIRYANA</a></h1>
+   </div>
+
+  <!-- Work: índice de piezas, al estilo de un listado de símbolos -->
+  <div id="work" class="section">
+    <div class="work-layout">
+      <div class="symbol-list">
+        <button class="work-card" onclick="loadWork('1')">
+          <img src="web/images/transitions/transitions.webp" alt="Transitions">
+          <span class="work-card-category">Performance</span>
+          <span>Transitions</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('2')">
+          <img src="web/images/CINEKIDS/Screenshot_20261003_233629.webp" alt="Cinekids interactive installation">
+          <span class="work-card-category">Interactive installation</span>
+          <span>Cinekids</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('3')">
+          <img src="web/images/The light from a void/Z51_3956.webp" alt="The light from a void">
+          <span class="work-card-category">Performance</span>
+          <span>The light from a void</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('4')">
+          <img src="web/images/Coccinellidae/Screenshot_20261012_211321.webp" alt="Coccinellidae">
+          <span class="work-card-category">Video installation</span>
+          <span>Coccinellidae</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('6')">
+          <img src="web/images/ecosenda/IMG_20250409_144947_00_027.webp" alt="Ecosenda">
+          <span class="work-card-category">Artistic residency · video</span>
+          <span>Ecosenda</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('7')">
+          <img src="web/images/baby%20precolombino/3D%20printed.webp" alt="Baby precolombino">
+          <span class="work-card-category">Ceramics and electronic music</span>
+          <span>Baby precolombino</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('8')">
+          <img src="images/Cyberfeminism/Cyberfeminism-preview.jpg" alt="Cyberfeminism performance">
+          <span class="work-card-category">Performance</span>
+          <span>Cyberfeminism</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('10')">
+          <img src="images/100 days of hydra/day51 (1).png" alt="100 days of Hydra">
+          <span class="work-card-category">Live coding</span>
+          <span>100 days of Hydra</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('12')">
+          <img src="web/images/sensing bodies/DSC_0017.webp" alt="Sensing bodies">
+          <span class="work-card-category">Performance essay ritual</span>
+          <span>Sensing bodies</span>
+        </button>
+
+        <button class="work-card" onclick="loadWork('13')">
+          <img src="web/images/new mirrors for venezuela/New-Mirrors-preview.webp" alt="New mirrors for Venezuela">
+          <span class="work-card-category">Illustration</span>
+          <span>New mirrors for Venezuela</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalle de cada pieza -->
+  <div id="work-detail" class="section">
+    <a class="project-arrow project-arrow--prev" href="#" aria-label="Previous work"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="project-arrow project-arrow--next" href="#" aria-label="Next work"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <header class="detail-header">
+      <nav class="detail-menu" aria-label="Main navigation">
+        <a class="detail-menu-item" href="home2.html">Home</a>
+      <a class="detail-menu-item" href="home2.html#about">About / CV</a>
+        <a class="detail-menu-item" href="home2.html#work">Works</a>
+        <a class="detail-menu-item" href="home2.html#artist-statement">Artistic research</a>
+      </nav>
+    </header>
+    <div class="text-block transitions-layout" data-work="1">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Performance</span>
+            <h2>Transitions</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p class="transitions-summary"><strong>Researching the identity between two cultures</strong></p>
+          <p>“Transitions” is a performative exploration of identity and belonging, weaving Venezuelan manduco and Basque arina-arina dance into a narrative of cultural in-betweenness. Through movement, garment and technology, the work reclaims the body as a site of radical self-expression, navigating the tension of never being “enough” of one culture. A journey from alienation to empowerment, where dance becomes a tool for reappropriation and freedom.</p>
+
+          <div class="transitions-meta">
+            <p>2026</p>
+            <p>Performance</p>
+            <p>Patch Studio</p>
+            <p>Keywords: cultural traditions, interactive wearable</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="transitions-quote">
+        <p>When I emigrated, I left behind the body I had there. I left an identity that I will never get back, forgetting that part of me, what was mine and that I could never be again.</p>
+        <p>“Identities that I don’t own but I was once.”</p>
+      </div>
+
+      <div class="transitions-split">
+        <div class="transitions-split-text">
+          <p>The goal of this work is to support my interdisciplinary artistic practice within the current massive immigration of Venezuelans. It explores the power of dance as a tool of bodily reappropriation and radical self-expression. The piece focuses on the transitions of immigrating and questioning identity. The consciousness of the body inside the alienation process of a different culture and the constant battle between desire and the limitations of never being enough of one culture.</p>
+        </div>
+        <figure class="transitions-image">
+          <img src="web/images/transitions/white.webp" alt="White PNG from Transitions">
+        </figure>
+      </div>
+
+      <div class="transitions-pair">
+        <figure class="transitions-image">
+          <img src="web/images/transitions/faralado.webp" alt="Original Transitions image">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/transitions/skirt1.webp" alt="Skirt PNG from Transitions">
+          <figcaption class="video-credit">Raspberry Pi Pico 2 W and gyroscope connection to Ableton</figcaption>
+        </figure>
+      </div>
+
+      <div class="transitions-split transitions-split--reverse">
+        <div class="transitions-split-text">
+          <p class="transitions-question">Who are we inside the in-betweenness of two identities and into what do we become?</p>
+          <p>The performance is based on the Venezuelan traditional dance “el manduco” and the Basque dance “arin-arina”. The elements of the garment build unity to create a narrative where both cultures are intertwined.</p>
+          <p>During the performance, “El manduco pa’ la ropa, el manduco pa’ lavar”, I start moving the manduco from up and down on the floor; it’s a gesture of cleaning cloth. This is a dance I learned when I was 8 years old. I remember the vibrant yellow long skirt and holding it in multiple ways with pride and happiness.</p>
+          <p>Years later I found myself inside the same situation with a different pace. The song no longer has a letter; “a pandora is playing with an accordion”. I am learning this new dance but I cannot go as fast as everyone. I am so confused about how to dance like the others, and why am I wearing this costume? I want to wear it like everyone else with pride, but I feel I left my body behind and I’m playing a character outside of me.</p>
+          <p class="transitions-question">Who am I? Where am I going? Not from here and not from there?</p>
+          <p>My body plays in the space and time, and I move haptically and slowly. For one moment I can control the story through my garment and my movement. I use technology as an empowering tool where I can control the music and take over my own story. I can dance freely now and live on this new self.</p>
+        </div>
+        <figure class="transitions-image">
+          <img src="web/images/transitions/yellow.webp" alt="Yellow PNG from Transitions">
+        </figure>
+      </div>
+
+      <div class="transitions-essay project-credits">
+        <div class="transitions-meta">
+          <p>Special thanks to Tadas for the sound design</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="2">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Interactive Installation</span>
+            <h2>Cinekids</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>BPMaxxing is a physical multiplayer game made for the Cinekids Festival in Amsterdam, responding to the festival’s theme of togetherness.</p>
+
+          <div class="transitions-meta">
+            <p>Created for Cinekids Festival</p>
+            <p>2026</p>
+            <p>ESP32 microcontroller, LED ring, Heart beat sensor MAX30102, Router</p>
+            <p>Touch Designer, Arduino IDE, Wifi network</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/C0017.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <p class="video-credit">Recorded by Pawel Poluwtki</p>
+        <p class="video-credit">Editing and video soundtrack by Simon Perjessy</p>
+      </div>
+
+      <div class="transitions-essay">
+        <p>Technology and togetherness</p>
+        <p>This project is a physical multiplayer game made for the Cinekids Festival in Amsterdam, responding to the festival’s theme of togetherness.</p>
+        <p>Three players each hold a controller that reads their pulse in real time. The goal is to collectively reach 120 BPM together. To get their heart rates up, players have to move, jump, run in place, whatever it takes. The game gives live feedback, showing each person’s pulse and nudging the group to calibrate until their rhythms align. Nobody wins alone. The win condition is synchronization.</p>
+        <p>BPMaxxing encourages children to connect through movement instead of screens. After a one-minute calibration, players run, jump, and play to adjust their heartbeats. Colors visualize their heart rates from blue (very low) to red (very high). Once both players reach a high target, they unlock a rainbow celebration with music and joyful sounds.</p>
+      </div>
+
+      <div class="transitions-essay project-credits">
+        <div class="transitions-meta">
+          <p>Electronics design and software development by Anabel Vasquez</p>
+          <p>Concept, direction and case design by Vanessa Ramos</p>
+          <p>Sound design by Lilith </p>
+          <p>Special thanks to Leo Scarin and Pawel Poluwtki :-) </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="3">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Performance · Korzo Theater</span>
+            <h2>The light from a void</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>A sensory labyrinth performance exploring intuition, memory and the emotional vulnerability of losing narrative structure.</p>
+
+          <div class="transitions-meta">
+            <p>Performance at Korzo Theater, Den haag</p>
+            <p>2026</p>
+            <p>Format: Performance</p>
+            <p>Concept and Script by Auke </p>
+            <p>Choreography by Anabel Miryana, Min Jae Kim and Adrianna</p>
+            <p>Soundscape by Nicolas</p>
+            <p>Stage design by Adrianna</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/Soundscape Trailer.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="transitions-gallery">
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/POSTER3.webp" alt="The light from a void poster">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/Z51_3945.webp" alt="The light from a void still 1">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/Z51_3979.webp" alt="The light from a void still 2">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/Z51_3990.webp" alt="The light from a void still 3">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/Z51_4023.webp" alt="The light from a void still 4">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/The light from a void/Z51_4031.webp" alt="The light from a void still 5">
+        </figure>
+      </div>
+
+      <div class="transitions-essay">
+        <p>We like to think of ourselves as very rational, logical beings. The labyrinth strips away the directional armor we carry with us in daily life. All our life experiences get neatly explained away by our rationality. A narrative is constructed to rationalize the memory of an event to make our emotional perception not only valid, but the only logical response to such an event. But what happens when we lose the ability to create a narrative?</p>
+        <p>When walking through a labyrinth, there is no narrative to create. There is no trick or sense to hold on to. That is not the point of the labyrinth. The only certainty is the body following the path laid before it and the trust in the path to take you to the center. This blinded trust makes the participants vulnerable. Isolated in the labyrinth without outside stimuli, the participants turn inward to a subjective emotional part of themselves, having to trust their intuition in this way. The labyrinth functions as a bridge to the subconscious, to an intuitive part of ourselves we lack access to in daily life.</p>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="4">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Video work</span>
+            <h2>Coccinellidae</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>A room becomes a garden of thoughts, ladybugs, aphids, flies, embody protection, anxiety, and overwhelm as the narrator navigates loneliness, panic, and the slow return to healing, while quietly critiquing mental health care system.</p>
+
+          <div class="transitions-meta">
+            <p>2025</p>
+            <p>Format: Video Installation and Writting</p>
+            <p>Concept by Anabel Vaquez</p>
+            <p>Sound Design and 3D Modeling by Anabel Vaquez</p>
+            <p>Software: Ableton Live and Blender</p>
+            <p>Special thanks to Anna Arov:)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/final2.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="6">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">360 camera</span>
+            <h2>Ecosenda//Kotla Jarve</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>Artistic Residency by the student program Ecosenda at Kotla Jarve, Estonia.</p>
+
+          <div class="transitions-meta">
+            <p>2025</p>
+            <p>Format: Paper, Video.</p>
+            <p>Concept by Anabel Vaquez</p>
+            <p>Sound Design and 3D Modeling by Anabel Vaquez</p>
+            <p>Software: Ableton Live and Blender</p>
+            <p>Special thanks to :)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/ecosenda/VID_20250409_110340_00_017.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/ecosenda/LRV_20250409_110340_01_017.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/ecosenda/LRV_20250409_111518_01_018.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/ecosenda/LRV_20250409_113627_01_020.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/ecosenda/ecosenda.mp4" data-no-audio autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <img src="web/images/ecosenda/DSC_0535.webp" alt="Ecosenda landscape recorded through a dual-lens camera">
+        <p class="video-credit">"Kukersite" rock used for burning and making oil shale in Kohtla-Järve </p>
+      </div>
+
+      <div class="transitions-essay">
+        <p>Ecosenda is a program that supports artistic research and collaboration in the context of environmental issues, collectively and individually researching on eco-sensible practices in the arts with workshops and documenting on 360 Camera and contact microhophne. </p>
+        <p>Ecosenda consists on a international collaboration between the academies of multispecies storytelling department, EKA academy, Taideakatemia, and Kunsthochshulefuermedien.</p>
+        <p>This was a an artistic residency where I documented with a 360-degree camera and a contact microphone the landscape of Kotla Jarve.</p>
+        <p>This artwork explores Estonia’s reliance on oil shale, a key natural resource used for energy production but with severe environmental consequences. It challenges viewers to rethink: what sustainable alternatives could we develop for this material to protect our planet?</p>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="7">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Ceramics and electronic music</span>
+            <h2>Electronic Marimbola/ Research project</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>I imagine a society where past Venezuelan indigenous tribes had access to advanced technology. Inspired by pre-Columbian Venezuelan ceramics, specifically the “Standing Female Anthropomorphic Rattle Figurine”, and traditional instruments like the marimbola. I blend ancestral heritage with futuristic aesthetics.</p>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/WhatsApp%20Video%202025-05-25%20at%2021.06.47.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="transitions-gallery">
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/la-im-ipc-0006-web80-1024x1024.webp" alt="Baby precolombino detail image">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/3D%20model.webp" alt="Baby precolombino 3D model">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/Premodel.webp" alt="Baby precolombino premodel">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/3D%20printed.webp" alt="Baby precolombino 3D printed">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/sketch1.webp" alt="Baby precolombino sketch 1">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/sketch2.webp" alt="Baby precolombino sketch 2">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/baby%20precolombino/sketch3.webp" alt="Baby precolombino sketch 3">
+        </figure>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/IMG_0138.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="8">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Performance</span>
+            <h2>Cyberfeminism</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>Exploring the role of women in technology, questioning the words of “mother-board” while blending with an intimate journey through the female body and natural sounds.</p>
+
+          <div class="transitions-meta">
+            <p>2025</p>
+            <p>Performance</p>
+            <p>Royal Academy of Art (KABK), Den Haag</p>
+            <p>Keywords: media theory</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/cyberfeminism.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/WhatsApp%20Video%202025-05-05%20at%2009.07.22.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="10">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Live coding</span>
+            <h2>100 days of Hydra</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>Through daily live coding visuals, Anabel Miryana confronts coding through image creation. The project is a digital mirror aiming to explore and play with geometry and color, blending the real world.</p>
+
+          <div class="transitions-meta">
+            <p>2025</p>
+            <p>Visual art</p>
+            <p>Creative programming</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/images/100 days of hydra/Main Edit.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="12">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Video performance</span>
+            <h2>Sensing bodies</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <p>This video performance explores the intimacy I have with technology, where interacting with it transforms it into a being that also interacts with me, creating a feedback loop that entangles me inside of this shibari of wires.</p>
+
+          <div class="transitions-meta">
+            <p>2024</p>
+            <p>Keywords: posthumanism, transhumanism, intimacy with technology, electronics, wires</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/transhumanism (tiny file) ‐ Hecho con Clipchamp.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="transitions-essay transitions-essay--middle transitions-essay--wide">
+        <p><strong>Posthumanism and Transhumanism</strong></p>
+        <p>These were my keywords for my essay :<br>
+        Can transhumanist technologies be considered living beings?</p>
+        <p>“Experimenting with performance, electronics, and wires, I explore the connection between myself and technology, encountering an intimacy that I build with machines—an intimacy that expands my being, yet also traps me in.”</p>
+        <p>I'm still researching my connections between myself and technology .</p>
+      </div>
+
+      <div class="transitions-gallery transitions-gallery--centered">
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0017.webp" alt="Sensing bodies installation">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0020.webp" alt="Sensing bodies">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0023.webp" alt="Sensing bodies">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0024.webp" alt="Sensing bodies">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0026.webp" alt="Sensing bodies">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/sensing bodies/DSC_0064.webp" alt="Sensing bodies">
+        </figure>
+      </div>
+
+      <!-- Sub-work: each one has its own question, text and pictures -->
+      <section class="subwork">
+        <h3 class="subwork-question">Why do I have feelings for technology?</h3>
+        <p class="text-divider" aria-hidden="true">━◦○◦━◦○◦━◦○◦━◦○◦━</p>
+        <div class="subwork-text">
+          <p><strong>Mix Media Poster</strong></p>
+          <p>From the traditional to the digital, experimenting with the cyanotype process, to scanning into mixed media, to TouchDesigner as an editing tool. To finalize, using Krita to draw :).</p>
+        </div>
+        <div class="transitions-gallery">
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/pcb 1 (1).webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/IMG_3057.webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/POSTER FINAL (1)_page-0001.webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/feelings.webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/feelings2.webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/feelings4_1.webp" alt="Sensing bodies">
+          </figure>
+          <figure class="transitions-image">
+            <img src="web/images/sensing bodies/feelings5.webp" alt="Sensing bodies">
+          </figure>
+        </div>
+      </section>
+    </div>
+
+    <div class="text-block transitions-layout" data-work="13">
+      <div class="transitions-row project-intro">
+        <div class="project-title-col">
+          <div class="blue-title-block">
+            <span class="blue-title-kicker">Ilustration</span>
+            <h2>New mirrors for Venezuela</h2>
+          </div>
+        </div>
+
+        <div class="transitions-copy">
+
+          <div class="transitions-meta">
+            <p>2024</p>
+            <p>Watercolor and video</p>
+            <p>Watercolor on paper, 21 x 29.7 cm</p>
+            <p>Keywords: visual heritage, futurism</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-video transitions-video">
+        <video src="web/mp4/New Mirrors for Venezuela sub.mp4" autoplay muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+      </div>
+
+      <div class="transitions-essay transitions-essay--middle">
+        <p>New mirrors for Venezuela emerges from a process of researching my visual heritage. The project questions how culture and tradition are shaped, appropriated, and manipulated by power. Under authoritarian narratives, history is simplified into heroic myths dominated by male figures, used to legitimize and empower those in control, while women are erased.</p>
+        <p>Through this work, I present a new mirror — a new reality for my country — where women return to history and take the lead in shaping the future.</p>
+        <p>María Lionza, a female cultural symbol, was removed from an autonomous public institution and placed under state control, turning her into an object within a political power struggle.</p>
+      </div>
+
+      <div class="transitions-pair transitions-pair--portrait">
+        <figure class="transitions-image">
+          <img src="web/images/new mirrors for venezuela/DSC_7120.webp" alt="New mirrors for Venezuela">
+        </figure>
+        <figure class="transitions-image">
+          <img src="web/images/new mirrors for venezuela/DSC_7121.webp" alt="New mirrors for Venezuela">
+        </figure>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Artist Statement -->
+  <div id="artist-statement" class="section">
+    <div class="text-block">
+      <h2>Artistic Research</h2>
+      <p>“When I emigrated, I left behind the body I had there. I abandoned an identity that I will never get back, forgetting a part of me that was mine and can never be again. Identities I no longer own, but once were.”</p>
+      <p>Immigration has been a core theme in my research, and this experience shapes my concepts. I see technology as an immigration process, shaping and taking form in different contexts: we adapt to technology, technology adapts to us, and I adapt to this new reality while carrying my culture with me. I see it as a process where technology becomes a tool to transform identity, rewrite history, or even immigrate into a new digital world. That is where my passion for interactive wearables comes from.</p>
+    </div>
+  </div>
+
+  <!-- About Me -->
+  <div id="about" class="section">
+    <div class="text-block">
+      <h2>About Me</h2>
+      <p>Anabel Miryana (she/her) (Venezuela,2004) (Based in Den Haag)</p>
+<p>I am an interactive artist and designer, building a vision of a future that reflects on our present society. My practice explores poetic-political questions around heritage, identity, movement, sexuality, intimacy, and humanness.</p>
+<p>In my work, the body becomes a subject of connection and transformation, taking the shape of an instrument, an interface, and a medium through which technology can reimagine the future</p>   
+<p>I create transdisciplinary artworks mixing performance, sound, installation, illustration, wearable electronics, computer graphics, and creative coding. I use technology to extend the senses, enhance connection, and bridge the physical and digital worlds.
+</p>
+<p>Collaboration and community are central to my process, allowing me to build a network with other artists and explore different methodologies, mediums, and fields. I have engaged with the live-coding scene in Rotterdam and Amsterdam, and I have collaborated in medialab spaces such as Tabakalera in San Sebastián.
+</p>
+</div>
+  </div>
+
+  <div id="contact-overlay" class="contact-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="contact-overlay-title" onclick="if (event.target === this) closeContactOverlay()">
+    <div class="contact-overlay-panel">
+      <button class="contact-overlay-close" id="contact-overlay-close" type="button" aria-label="Close contact panel" onclick="closeContactOverlay()">×</button>
+      <h2 id="contact-overlay-title">Contact</h2>
+      <div class="contact-overlay-links">
+        <a href="mailto:anabelmiryana@tutamail.com">tutamail</a>
+        <a href="https://www.instagram.com/anabelmiryana/" target="_blank" rel="noopener noreferrer">instagram</a>
+        <a href="https://www.youtube.com/channel/UCuigq94woxzgQYbfchGiN1g" target="_blank" rel="noopener noreferrer">youtube</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>Anabel Miryana © 2026</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+
+  /* =========================================================
+     NAVEGACIÓN
+  ========================================================= */
+  function toggleContactOverlay(){
+    const overlay = document.getElementById('contact-overlay');
+    if (!overlay.hidden){
+      closeContactOverlay();
+      return;
+    }
+
+    overlay.hidden = false;
+    document.getElementById('nav-contact').setAttribute('aria-expanded', 'true');
+    document.getElementById('contact-overlay-close').focus();
+  }
+
+  function closeContactOverlay(){
+    const overlay = document.getElementById('contact-overlay');
+    if (overlay.hidden) return;
+
+    overlay.hidden = true;
+    const contactButton = document.getElementById('nav-contact');
+    contactButton.setAttribute('aria-expanded', 'false');
+    contactButton.focus();
+  }
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeContactOverlay();
+  });
+
+function loadSection(sectionId){
+     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+     document.querySelectorAll('.compass').forEach(b => b.classList.remove('active'));
+
+     const target = document.getElementById(sectionId);
+     if (target) target.classList.add('active');
+
+     const navBtn = document.getElementById('nav-' + sectionId);
+     if (navBtn) navBtn.classList.add('active');
+     document.body.classList.remove('detail-active');
+
+     // El shader solo corre en home; el resto de secciones usa un fondo estático
+     if (sectionId === 'home'){
+       document.body.classList.remove('static-bg');
+       document.body.classList.add('home-active');
+       showHomeVideo();
+       showShaderBackground();
+     } else {
+       hideHomeVideo();
+       hideShaderBackground();
+       document.body.classList.add('static-bg');
+       document.body.classList.remove('home-active');
+     }
+   }
+
+   function loadWork(id){
+     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+     document.getElementById('work-detail').classList.add('active');
+     document.querySelectorAll('#work-detail .text-block').forEach(b => b.classList.remove('active'));
+     document.querySelector('#work-detail .text-block[data-work="' + id + '"]').classList.add('active');
+
+     // Silence the work you left and start the new one from the top
+     document.querySelectorAll('#work-detail .text-block:not(.active) video').forEach(v => { v.pause(); v.muted = true; });
+     document.querySelectorAll('#work-detail .text-block.active video').forEach(v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); });
+     document.getElementById('work-detail').scrollTop = 0;
+
+     // Arrows go to the previous and next work, in the same order as the Works list
+     const order = ['2', '1', '4', '3', '6', '7', '8', '10', '12', '13'];
+     const at = order.indexOf(String(id));
+     document.querySelector('.project-arrow--prev').href = '#project-' + order[(at - 1 + order.length) % order.length];
+     document.querySelector('.project-arrow--next').href = '#project-' + order[(at + 1) % order.length];
+
+     document.querySelectorAll('.compass').forEach(b => b.classList.remove('active'));
+     document.getElementById('nav-work').classList.add('active');
+     document.body.classList.add('detail-active');
+
+     hideHomeVideo();
+     hideShaderBackground();
+     document.body.classList.add('static-bg');
+     document.body.classList.remove('home-active');
+   }
+    /* Abrir un proyecto directamente si la URL trae #project-<id>
+       (usado por los enlaces del home2 / work) */
+    function openProjectFromHash(){
+      const match = (window.location.hash || '').match(/^#project-(\d+)$/);
+      if (!match) return false;
+      const detail = document.getElementById('work-detail');
+      const block = document.querySelector('#work-detail .text-block[data-work="' + match[1] + '"]');
+      if (detail && block){
+        loadWork(match[1]);
+        return true;
+      }
+      return false;
+    }
+
+    window.addEventListener('hashchange', openProjectFromHash);
+
+    /* Volver al listado de works en modo popup (home2) desde el detalle */
+    function closeWorkDetail(){
+      window.location.href = 'home2.html#work';
+    }
+
+
+  /* =========================================================
+     FONDO SHADER (Three.js) — SOLO EN HOME
+  ========================================================= */
+  const canvas = document.getElementById('bg-canvas');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const homeVideo = document.getElementById('home-background-video');
+  const texture = new THREE.VideoTexture(homeVideo);
+  texture.minFilter = THREE.NearestFilter;
+  texture.magFilter = THREE.NearestFilter;
+  texture.generateMipmaps = false;
+
+  const uniforms = {
+    uTexture:      { value: texture },
+    uResolution:   { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+    uImageRes:     { value: new THREE.Vector2(1600, 1067) },
+    uMouse:        { value: new THREE.Vector2(0.5, 0.5) },
+    uPixelSize:    { value: 40.0 },
+    uClickBurst:   { value: 0.0 },
+    uPointerActive:{ value: 0.0 }
+  };
+
+  homeVideo.addEventListener('loadedmetadata', () => {
+    uniforms.uImageRes.value.set(homeVideo.videoWidth || 1600, homeVideo.videoHeight || 1067);
+  });
+
+  const vertexShader = `
+    varying vec2 vUv;
+    void main(){
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    uniform sampler2D uTexture;
+    uniform vec2 uResolution;
+    uniform vec2 uImageRes;
+    uniform vec2 uMouse;
+    uniform float uPixelSize;
+    uniform float uClickBurst;
+    uniform float uPointerActive;
+    varying vec2 vUv;
+
+    vec2 coverUv(vec2 uv, vec2 res, vec2 imgRes){
+      float resAspect = res.x / res.y;
+      float imgAspect = imgRes.x / imgRes.y;
+      vec2 scale = resAspect > imgAspect
+        ? vec2(1.0, resAspect / imgAspect)
+        : vec2(imgAspect / resAspect, 1.0);
+      vec2 centered = (uv - 0.5) * scale + 0.5;
+      return centered;
+    }
+
+    void main(){
+      vec2 uv = coverUv(vUv, uResolution, uImageRes);
+
+      float dist = distance(vUv, uMouse);
+      float influence = (1.0 - smoothstep(0.0, 0.2, dist)) * uPointerActive;
+
+      float effectStrength = clamp(influence + uClickBurst * 0.6, 0.0, 1.0);
+      float px = mix(4.0, uPixelSize, effectStrength);
+      px = max(px, 1.0);
+
+      vec2 pixelGrid = uResolution / px;
+      vec2 pixelatedUv = floor(uv * pixelGrid) / pixelGrid;
+
+      vec3 originalColor = texture2D(uTexture, uv).rgb;
+      vec3 pixelatedColor = texture2D(uTexture, pixelatedUv).rgb;
+      vec3 color = mix(originalColor, pixelatedColor, effectStrength);
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  const material = new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+  scene.add(mesh);
+
+  let targetMouse = new THREE.Vector2(0.5, 0.5);
+  let clickBurst = 0;
+  let shaderActive = true;
+  let rafId = null;
+
+  window.addEventListener('mousemove', (e) => {
+    targetMouse.x = e.clientX / window.innerWidth;
+    targetMouse.y = 1.0 - e.clientY / window.innerHeight;
+    uniforms.uPointerActive.value = document.getElementById('home').classList.contains('active') ? 1.0 : 0.0;
+  });
+
+  window.addEventListener('mouseleave', () => {
+    uniforms.uPointerActive.value = 0.0;
+  });
+
+  window.addEventListener('click', () => {
+    if (shaderActive) clickBurst = 1.0;
+  });
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+  });
+
+  const clock = new THREE.Clock();
+  function animate(){
+    rafId = requestAnimationFrame(animate);
+
+    const dt = clock.getDelta();
+    uniforms.uMouse.value.lerp(targetMouse, 0.15);
+
+    clickBurst = Math.max(0, clickBurst - dt * 1.5);
+    uniforms.uClickBurst.value = clickBurst;
+
+    renderer.render(scene, camera);
+  }
+
+  function showShaderBackground(){
+    shaderActive = true;
+    canvas.classList.add('visible');
+    if (!rafId) animate();
+  }
+
+  function hideShaderBackground(){
+    shaderActive = false;
+    canvas.classList.remove('visible');
+    if (rafId){
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  function showHomeVideo(){
+    homeVideo.classList.add('visible');
+    homeVideo.play().catch(() => {});
+  }
+
+  function hideHomeVideo(){
+    homeVideo.classList.remove('visible');
+    homeVideo.pause();
+  }
+
+  // Estado inicial: home está activo, así que arrancamos el video
+  showHomeVideo();
+  showShaderBackground();
+
+  /* =========================================================
+     PIXEL REVEAL — solo en la foto de "Sensing bodies"
+  ========================================================= */
+  const revealCanvas = document.getElementById('pixel-reveal-canvas');
+  const revealImg = document.querySelector('.text-block[data-work="22"] figure img');
+
+  const revealRenderer = new THREE.WebGLRenderer({ canvas: revealCanvas, antialias: true, alpha: true });
+  revealRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  revealRenderer.setSize(window.innerWidth, window.innerHeight);
+
+  const revealScene = new THREE.Scene();
+  const revealCamera = new THREE.OrthographicCamera(0, window.innerWidth, 0, window.innerHeight, -10, 10);
+  revealCamera.position.z = 1;
+
+  const revealVertexShader = `
+    varying vec2 vUv;
+    void main(){
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+
+  const revealFragmentShader = `
+    uniform sampler2D uTexture;
+    uniform float uProgress;   // 0 = pixelado, 1 = nítido
+    uniform vec2 uPlaneSize;
+    varying vec2 vUv;
+
+    void main(){
+      float maxBlock = 1.0;   // <- bloques más chicos (antes 24.0)
+      float blockSize = mix(maxBlock, 1.0, uProgress);
+
+      vec2 grid = uPlaneSize / blockSize;
+      // muestrear el CENTRO de cada bloque, no la esquina, para bordes más limpios
+      vec2 pixelatedUv = (floor(vUv * grid) + 0.5) / grid;
+
+      vec4 color = texture2D(uTexture, pixelatedUv);
+      color.rgb *= mix(0.55, 1.0, uProgress);
+
+      gl_FragColor = color;
+    }
+  `;
+
+  const revealTexture = new THREE.Texture();
+  const revealMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture:   { value: revealTexture },
+      uProgress:  { value: 0.0 },
+      uPlaneSize: { value: new THREE.Vector2(1, 1) }
+    },
+    vertexShader: revealVertexShader,
+    fragmentShader: revealFragmentShader,
+    transparent: true
+  });
+
+  const revealMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), revealMaterial);
+  revealScene.add(revealMesh);
+
+  let revealProgress = 0;
+  let revealTarget = 0;
+  let revealActive = false;
+  let revealRafId = null;
+
+  function loadRevealTexture(){
+    revealTexture.image = revealImg;
+    revealTexture.needsUpdate = true;
+    revealTexture.minFilter = THREE.NearestFilter;
+    revealTexture.magFilter = THREE.NearestFilter;
+  }
+  if (revealImg){
+    if (revealImg.complete) loadRevealTexture();
+    else revealImg.addEventListener('load', loadRevealTexture);
+
+    revealImg.addEventListener('mouseenter', () => { revealTarget = 1; });
+    revealImg.addEventListener('mouseleave', () => { revealTarget = 0; });
+  }
+
+  function layoutReveal(){
+    if (!revealImg) return;
+
+    revealCamera.left = 0;
+    revealCamera.right = window.innerWidth;
+    revealCamera.top = 0;
+    revealCamera.bottom = window.innerHeight;
+    revealCamera.updateProjectionMatrix();
+
+    const rect = revealImg.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+
+    revealMesh.scale.set(w, h, 1);
+    revealMesh.position.set(
+      rect.left + w / 2,
+      window.innerHeight - (rect.top + h / 2),
+      0
+    );
+    revealMaterial.uniforms.uPlaneSize.value.set(w, h);
+
+    // ocultar el canvas si la imagen no está visible en este momento
+    const visible = w > 0 && h > 0 && document.getElementById('work-detail').classList.contains('active')
+      && document.querySelector('.text-block[data-work="22"]').classList.contains('active');
+    revealCanvas.classList.toggle('visible', visible);
+  }
+
+  function animateReveal(){
+    revealRafId = requestAnimationFrame(animateReveal);
+    revealProgress += (revealTarget - revealProgress) * 0.06;
+    revealMaterial.uniforms.uProgress.value = revealProgress;
+    layoutReveal();
+    revealRenderer.render(revealScene, revealCamera);
+  }
+  animateReveal();
+
+  window.addEventListener('resize', () => {
+    revealRenderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  const workDetailEl = document.getElementById('work-detail');
+  if (workDetailEl) workDetailEl.addEventListener('scroll', layoutReveal);
+
+  // Open a project from the URL: last, once the home video and background above exist
+  openProjectFromHash();
+</script>
+
+<script>
+  /* Landing: clicking anywhere on the video screen goes to home2.html */
+  const landing = document.getElementById('home');
+  if (landing) {
+    landing.addEventListener('click', event => {
+      if (document.body.classList.contains('home-active') && !event.target.closest('a')) {
+        window.location.href = 'home2.html';
+      }
+    });
+  }
+
+  /* Pictures and videos fade in slowly whenever they scroll into view (down or up) */
+  if ('IntersectionObserver' in window) {
+    // Cover pictures (top left of each project) stay put: no fade
+    const revealItems = Array.from(document.querySelectorAll('#work-detail .transitions-image, #work-detail .transitions-video'))
+      .filter(el => !el.closest('.transitions-visuals'));
+    const revealObserver = new IntersectionObserver(entries => {
+      // Fade in when it comes into view, fade out again when it leaves,
+      // so the effect plays every time, scrolling down or up
+      entries.forEach(entry => {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      });
+    }, {
+      threshold: 0.12
+    });
+    revealItems.forEach(el => {
+      el.classList.add('reveal');
+      revealObserver.observe(el);
+    });
+    document.documentElement.classList.add('reveal-ready');
+  }
+
+  /* Zoom: clicking a project picture opens it full screen; click or Esc closes */
+  const imageZoom = document.createElement('div');
+  imageZoom.className = 'image-zoom';
+  imageZoom.hidden = true;
+  imageZoom.setAttribute('role', 'dialog');
+  imageZoom.setAttribute('aria-modal', 'true');
+  imageZoom.setAttribute('aria-label', 'Zoomed picture');
+  const imageZoomImg = document.createElement('img');
+  imageZoom.appendChild(imageZoomImg);
+  document.body.appendChild(imageZoom);
+
+  function openImageZoom(img){
+    imageZoomImg.src = img.currentSrc || img.src;
+    imageZoomImg.alt = img.alt;
+    imageZoom.hidden = false;
+    void imageZoom.offsetWidth;
+    imageZoom.classList.add('is-open');
+  }
+
+  function closeImageZoom(){
+    if (imageZoom.hidden) return;
+    imageZoom.classList.remove('is-open');
+    setTimeout(() => { imageZoom.hidden = true; }, 250);
+  }
+
+  document.addEventListener('click', event => {
+    const img = event.target.closest && event.target.closest('#work-detail .text-block img');
+    if (img) openImageZoom(img);
+  }, true);
+  imageZoom.addEventListener('click', closeImageZoom);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeImageZoom();
+  });
+
+</script>
+<script>
+  /* Videos have no controls, so make sure they start: try now, and again on the first click, key, touch or scroll
+     (some browsers block autoplay until the visitor interacts with the page) */
+  (function () {
+    function playAll() {
+      document.querySelectorAll('video').forEach(function (v) {
+        if (!v.dataset.touched) v.muted = true;
+        if (v.paused && v.offsetParent !== null) {
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      });
+    }
+    document.addEventListener('volumechange', function (e) { if (e.target.tagName === 'VIDEO' && !e.target.muted) e.target.dataset.touched = '1'; }, true);
+    playAll();
+    window.addEventListener('load', playAll);
+    ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'].forEach(function (type) {
+      window.addEventListener(type, playAll, { passive: true, capture: true });
+    });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) playAll(); });
+  })();
+</script>
+<script src="cat.js"></script>
+
+</body>
+</html>
