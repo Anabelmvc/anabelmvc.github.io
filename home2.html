@@ -1232,6 +1232,25 @@ a[href], a[href] *, button, button * {
   bottom: 1rem;
   font-style: italic;
 }
+
+/* Home background: perforated mesh over a soft glow. Tile: black 4x12 slots, staggered every 8px */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #a99a9a;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath fill='%230e0e0e' d='M0 0h4v12H0zM8 8h4v8H8zM8 0h4v4H8z'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 30% 45%, #bcaeae 0%, #ab9b9b 40%, #7d7272 75%, #454242 100%);
+  background-size: 16px 16px, 100% 100%;
+}
+
+/* The menu keeps its beige bar on Home so it stays readable over the mesh */
+.site-header {
+  background: var(--bg) !important;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
