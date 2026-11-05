@@ -2362,10 +2362,10 @@ function loadSection(sectionId){
        document.body.classList.remove('static-bg');
        document.body.classList.add('home-active');
        showHomeVideo();
-       showShaderBackground();
+       if (window.showShaderBackground) window.showShaderBackground();
      } else {
        hideHomeVideo();
-       hideShaderBackground();
+       if (window.hideShaderBackground) window.hideShaderBackground();
        document.body.classList.add('static-bg');
        document.body.classList.remove('home-active');
      }
@@ -2393,7 +2393,7 @@ function loadSection(sectionId){
      document.body.classList.add('detail-active');
 
      hideHomeVideo();
-     hideShaderBackground();
+     if (window.hideShaderBackground) window.hideShaderBackground();
      document.body.classList.add('static-bg');
      document.body.classList.remove('home-active');
    }
@@ -2419,6 +2419,31 @@ function loadSection(sectionId){
     }
 
 
+  /* Home video: plain video, needs nothing else */
+  const homeVideo = document.getElementById('home-background-video');
+
+  function showHomeVideo(){
+    homeVideo.classList.add('visible');
+    homeVideo.play().catch(() => {});
+  }
+
+  function hideHomeVideo(){
+    homeVideo.classList.remove('visible');
+    homeVideo.pause();
+  }
+
+  // Estado inicial: home está activo, así que arrancamos el video
+  showHomeVideo();
+
+  // Open a project from the URL. This must not depend on the 3D effect below
+  openProjectFromHash();
+</script>
+
+<script>
+  /* The 3D effects are extras: some browsers (LibreWolf) have WebGL off, and then this
+     whole block stops quietly and the site works without them */
+  (function () {
+  try {
   /* =========================================================
      FONDO SHADER (Three.js) — SOLO EN HOME
   ========================================================= */
@@ -2430,7 +2455,6 @@ function loadSection(sectionId){
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  const homeVideo = document.getElementById('home-background-video');
   const texture = new THREE.VideoTexture(homeVideo);
   texture.minFilter = THREE.NearestFilter;
   texture.magFilter = THREE.NearestFilter;
@@ -2555,19 +2579,10 @@ function loadSection(sectionId){
     }
   }
 
-  function showHomeVideo(){
-    homeVideo.classList.add('visible');
-    homeVideo.play().catch(() => {});
-  }
+  window.hideShaderBackground = hideShaderBackground;
+  window.showShaderBackground = showShaderBackground;
 
-  function hideHomeVideo(){
-    homeVideo.classList.remove('visible');
-    homeVideo.pause();
-  }
-
-  // Estado inicial: home está activo, así que arrancamos el video
-  showHomeVideo();
-  showShaderBackground();
+  if (document.getElementById('home').classList.contains('active')) showShaderBackground();
 
   /* =========================================================
      PIXEL REVEAL — solo en la foto de "Sensing bodies"
@@ -2689,8 +2704,10 @@ function loadSection(sectionId){
   const workDetailEl = document.getElementById('work-detail');
   if (workDetailEl) workDetailEl.addEventListener('scroll', layoutReveal);
 
-  // Open a project from the URL: last, once the home video and background above exist
-  openProjectFromHash();
+  } catch (e) {
+    // No WebGL or Three.js: carry on without the effects
+  }
+  })();
 </script>
 
 <script>
