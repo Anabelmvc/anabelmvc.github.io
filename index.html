@@ -1533,21 +1533,19 @@ body.home-active #home {
   text-transform: none !important;
 }
 
-/* Menu: Home + About on the left, Works then Artistic research on the right */
+/* Menu: Home + About on the left, Works on the right */
 .detail-menu .detail-menu-item:nth-child(2) {
   margin-left: clamp(1.5rem, 4vw, 3.5rem);
 }
 
 .detail-menu .detail-menu-item:nth-child(3) {
   margin-left: auto;
-  margin-right: clamp(1.5rem, 4vw, 3.5rem);
 }
 
 /* On a phone: smaller gaps so the menu stays on one line */
 @media (max-width: 600px) {
   .detail-menu-item { font-size: 0.8rem !important; }
   .detail-menu .detail-menu-item:nth-child(2) { margin-left: 0.8rem; }
-  .detail-menu .detail-menu-item:nth-child(3) { margin-right: 0.8rem; }
 }
 
 
@@ -1648,7 +1646,6 @@ a[href], a[href] *, button, button * {
   .detail-menu .detail-menu-item:nth-child(1) { position: relative !important; margin: 0 0 0 0.8rem; order: 1; }
   .detail-menu .detail-menu-item:nth-child(2) { order: 0; }
   .detail-menu .detail-menu-item:nth-child(3) { order: 2; }
-  .detail-menu .detail-menu-item:nth-child(4) { order: 3; }
 }
 
 /* Previous / next work: the arrow tips sit on the same margins as the menu.
@@ -1785,7 +1782,6 @@ a[href], a[href] *, button, button * {
         <a class="detail-menu-item" href="home2.html">Home</a>
       <a class="detail-menu-item" href="home2.html#about">About / CV</a>
         <a class="detail-menu-item" href="home2.html#work">Works</a>
-        <a class="detail-menu-item" href="home2.html#artist-statement">Artistic research</a>
       </nav>
     </header>
     <div class="text-block transitions-layout" data-work="1">
