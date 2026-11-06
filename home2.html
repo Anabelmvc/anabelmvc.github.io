@@ -1173,63 +1173,100 @@ a[href], a[href] *, button, button * {
   cursor: pointer;
 }
 
-/* Home sits in the exact middle of the menu; About moves to the left edge */
-.menu { position: relative; width: 100%; }
+
+/* Home gallery layout: name left, Works + About right, filter pills, four-column picture grid */
+.menu { justify-content: flex-start; }
 #nav-home {
-  position: absolute !important;
-  top: 0;
-  bottom: 0;
+  margin: 0;
+  font-size: clamp(1.15rem, 1.35vw, 1.4rem) !important;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #000000;
+}
+#nav-work, #nav-about {
+  font-size: 1rem !important;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #8a857d;
+}
+#nav-work { margin-left: auto; }
+#nav-about { margin-left: clamp(1rem, 2vw, 2rem); }
+#nav-work[aria-expanded="true"], #nav-about[aria-expanded="true"] { color: #000000; }
+#nav-home:hover, #nav-work:hover, #nav-about:hover { color: #ff5fa2; }
+
+.work-labels {
+  gap: 0.6rem 0.75rem;
+  margin: 0 0 clamp(2rem, 5vh, 3rem);
+  padding: 0 10.8vw;
+}
+.work-labels button {
+  padding: 0.45em 0.95em;
+  border-radius: 999px;
+  background: #e9e2d6;
+  font-size: 1rem;
+  color: #3a3733;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.work-labels button:hover { background: #ddd4c6; color: #000000; }
+.work-labels button[aria-pressed="true"] { background: #111111; color: #f4efe6; }
+
+.work-rows {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.4vh, 1.5rem) 0.75rem;
+  padding: 0 10.8vw 6rem;
+}
+.work-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 !important;
+}
+.work-row.is-hidden { display: none; }
+.work-row .work-row-text {
+  order: 2;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  text-align: center;
+}
+.work-row img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+}
+.work-row .work-row-text h3 {
+  margin: 0.8rem 0 0 !important;
+  font-size: 1rem !important;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-align: center;
+}
+.work-row-sub, .work-row-desc { display: none; }
+
+.gallery-foot { display: none; }
+body.on-gallery .gallery-foot {
+  position: fixed;
   left: 0;
   right: 0;
-  width: fit-content;
-  height: fit-content;
-  margin: auto;
-}
-#nav-about { margin-left: 0; }
-@media (max-width: 600px) {
-  #nav-home { position: relative !important; margin: 0 0 0 0.8rem; order: 1; }
-  #nav-about { order: 0; }
-  #nav-work { order: 2; }
-}
-
-/* About: the whole portrait with no fade or tint; white text sits on its dark left side, clear of the face */
-@media (min-width: 901px) {
-  .about-hero {
-    background: url('web/images/Artist Statement/Sensing_bodies_portrait.webp') center / cover no-repeat !important;
-  }
-  .about-hero .scroll-hint { color: #ffffff; }
-  .about-hero .text-block--about {
-    width: 44vw !important;
-    max-width: 44vw !important;
-  }
-  .about-hero .text-block--about,
-  .about-hero .text-block--about h2,
-  .about-hero .text-block--about p,
-  .about-hero .text-block--about .about-subtitle,
-  .about-hero .text-block--about .about-contact a {
-    color: #ffffff !important;
-  }
-  .about-hero .text-block--about .about-contact a:hover {
-    color: #ff5fa2 !important;
-  }
+  bottom: 0;
+  z-index: 56;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.1rem var(--edge);
+  background: var(--bg);
+  font-size: 0.85rem;
+  color: #6f6a62;
 }
 
-/* Friends: same as About, the whole picture with no fade, and a big title without the arrow.
-   Black reads better than white on this mid-tone picture. */
-.about-cv .cv-friends {
-  padding-top: clamp(7rem, 16vh, 9rem) !important;
-  background: url('web/images/contact/contact-picture.webp') center / cover no-repeat !important;
+@media (max-width: 900px) {
+  .work-labels, .work-rows { padding-left: var(--edge); padding-right: var(--edge); }
+  .work-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.about-cv .cv-friends h3 {
-  font-size: clamp(2.2rem, 3.2vw, 3.2rem);
-  line-height: 1.1;
+@media (max-width: 500px) {
+  .work-rows { grid-template-columns: minmax(0, 1fr); }
 }
-.about-cv .cv-friends .cv-friends-credit {
-  right: var(--edge);
-  bottom: 1rem;
-  font-style: italic;
-}
-
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1239,11 +1276,12 @@ a[href], a[href] *, button, button * {
 
   <header class="site-header">
     <nav class="menu" aria-label="Main navigation">
-      <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Home</button>
-      <button class="menu-item" type="button" id="nav-about" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('about', this)">About / CV</button>
+      <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Anabel Miryana</button>
       <button class="menu-item" type="button" id="nav-work" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('work', this)">Works</button>
+      <button class="menu-item" type="button" id="nav-about" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('about', this)">About / CV</button>
     </nav>
   </header>
+  <footer class="gallery-foot"><span>anabelmiryana.com</span><span>2026 @ Den Haag</span></footer>
 
   <!-- ---------- Big pop-up overlay ---------- -->
   <div class="info-overlay" id="info-overlay" hidden>
@@ -1254,7 +1292,7 @@ a[href], a[href] *, button, button * {
 
   <!-- ---------- Hidden content templates for the pop-up ---------- -->
   <template id="tpl-work">
-    <!-- One project per screen: text on the left, big picture on the right. Order = order on the page. -->
+    <!-- Home gallery: picture with title and year underneath. Order = order on the page. -->
     <div class="work-labels">
       <button type="button" data-filter="all" aria-pressed="true">All</button>
       <button type="button" data-filter="3d-modeling" aria-pressed="false">3D modeling</button>
@@ -1267,7 +1305,7 @@ a[href], a[href] *, button, button * {
     <div class="work-rows">
       <a class="work-row" href="index.html#project-2" data-tags="electronics">
         <div class="work-row-text">
-          <h3>Cinekids</h3>
+          <h3>Cinekids (2026)</h3>
           <p class="work-row-sub">Interactive installation, 2026</p>
           <p class="work-row-desc">BPMaxxing is a physical multiplayer game made for the Cinekids Festival in Amsterdam, responding to the festival’s theme of togetherness.</p>
         </div>
@@ -1275,7 +1313,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-1" data-tags="performance electronics">
         <div class="work-row-text">
-          <h3>Transitions</h3>
+          <h3>Transitions (2026)</h3>
           <p class="work-row-sub">Performance, 2026</p>
           <p class="work-row-desc">“Transitions” is a performative exploration of identity and belonging, weaving Venezuelan manduco and Basque arina-arina dance into a narrative of cultural in-betweenness. Through movement, garment and technology, the work reclaims the body as a site of radical self-expression, navigating the tension of never being “enough” of one culture. A journey from alienation to empowerment, where dance becomes a tool for reappropriation and freedom.</p>
         </div>
@@ -1283,7 +1321,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-4" data-tags="3d-modeling">
         <div class="work-row-text">
-          <h3>Coccinellidae</h3>
+          <h3>Coccinellidae (2025)</h3>
           <p class="work-row-sub">Video installation, 2025</p>
           <p class="work-row-desc">A room becomes a garden of thoughts, ladybugs, aphids, flies, embody protection, anxiety, and overwhelm as the narrator navigates loneliness, panic, and the slow return to healing, while quietly critiquing mental health care system.</p>
         </div>
@@ -1291,7 +1329,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-3" data-tags="performance">
         <div class="work-row-text">
-          <h3>The light from a void</h3>
+          <h3>The light from a void (2026)</h3>
           <p class="work-row-sub">Performance, 2026</p>
           <p class="work-row-desc">A sensory labyrinth performance exploring intuition, memory and the emotional vulnerability of losing narrative structure.</p>
         </div>
@@ -1299,7 +1337,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-6" data-tags="collaboration">
         <div class="work-row-text">
-          <h3>Ecosenda</h3>
+          <h3>Ecosenda (2025)</h3>
           <p class="work-row-sub">Artistic residency · video, 2025</p>
           <p class="work-row-desc">Artistic Residency by the student program Ecosenda at Kotla Jarve, Estonia.</p>
         </div>
@@ -1315,7 +1353,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-8" data-tags="performance">
         <div class="work-row-text">
-          <h3>Cyberfeminism</h3>
+          <h3>Cyberfeminism (2025)</h3>
           <p class="work-row-sub">Performance, 2025</p>
           <p class="work-row-desc">Exploring the role of women in technology, questioning the words of “mother-board” while blending with an intimate journey through the female body and natural sounds.</p>
         </div>
@@ -1323,7 +1361,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-10" data-tags="creative-coding">
         <div class="work-row-text">
-          <h3>100 days of Hydra</h3>
+          <h3>100 days of Hydra (2025)</h3>
           <p class="work-row-sub">Live coding, 2025</p>
           <p class="work-row-desc">Through daily live coding visuals, Anabel Miryana confronts coding through image creation. The project is a digital mirror aiming to explore and play with geometry and color, blending the real world.</p>
         </div>
@@ -1331,7 +1369,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-12" data-tags="performance electronics creative-coding">
         <div class="work-row-text">
-          <h3>Sensing bodies</h3>
+          <h3>Sensing bodies (2024)</h3>
           <p class="work-row-sub">Video performance, 2024</p>
           <p class="work-row-desc">This video performance explores the intimacy I have with technology, where interacting with it transforms it into a being that also interacts with me, creating a feedback loop that entangles me inside of this shibari of wires.</p>
         </div>
@@ -1339,7 +1377,7 @@ a[href], a[href] *, button, button * {
       </a>
       <a class="work-row" href="index.html#project-13" data-tags="illustration">
         <div class="work-row-text">
-          <h3>New mirrors for Venezuela</h3>
+          <h3>New mirrors for Venezuela (2024)</h3>
           <p class="work-row-sub">Illustration, 2024</p>
           <p class="work-row-desc">New mirrors for Venezuela emerges from a process of researching my visual heritage. The project questions how culture and tradition are shaped, appropriated, and manipulated by power. Under authoritarian narratives, history is simplified into heroic myths dominated by male figures, used to legitimize and empower those in control, while women are erased.</p>
         </div>
@@ -1503,7 +1541,7 @@ a[href], a[href] *, button, button * {
 
     // Home: close any open window and go back to the home screen
     function goHome() {
-      if (!infoOverlay.hidden) closeInfo();
+      openInfo('work', document.getElementById('nav-work'));
     }
 
     var infoOverlay = document.getElementById('info-overlay');
@@ -1512,6 +1550,7 @@ a[href], a[href] *, button, button * {
     var lastTrigger = null;
     var closeTimer = null;
 
+    var currentKey = null;
     function openInfo(key, trigger) {
       var tpl = document.getElementById('tpl-' + key);
       if (!tpl) return;
@@ -1519,6 +1558,8 @@ a[href], a[href] *, button, button * {
       if (closeTimer) { window.clearTimeout(closeTimer); closeTimer = null; }
 
       lastTrigger = trigger || null;
+      currentKey = key;
+      document.body.classList.toggle('on-gallery', key === 'work');
       infoContent.innerHTML = '';
       infoContent.appendChild(tpl.content.cloneNode(true));
       watchWorkImages();
@@ -1588,10 +1629,10 @@ a[href], a[href] *, button, button * {
       infoOverlay.scrollTop = 0;
     });
     infoOverlay.addEventListener('click', function (event) {
-      if (event.target === infoOverlay) closeInfo();
+      if (event.target === infoOverlay && currentKey !== 'work') goHome();
     });
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && !infoOverlay.hidden) closeInfo();
+      if (event.key === 'Escape' && currentKey !== 'work') goHome();
     });
 
     // Focus trap: keep Tab focus inside the open dialog
@@ -1640,6 +1681,8 @@ a[href], a[href] *, button, button * {
     var hashKey = window.location.hash.slice(1);
     if (['work', 'about', 'artist-statement'].indexOf(hashKey) !== -1) {
       openInfo(hashKey, document.getElementById('nav-' + hashKey));
+    } else {
+      goHome(); // Home is the works gallery
     }
   </script>
 
