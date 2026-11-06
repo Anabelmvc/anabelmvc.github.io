@@ -16,7 +16,7 @@
 
   :root{
     --font: 'Inter Tight', Helvetic;
-    --bg: #f4efe6;
+    --bg: #ffffff;
     --ink: #111111;
     --muted: #5a5a5a;
     --accent: #1a1a1a;
@@ -165,7 +165,7 @@
     align-items: flex-start;
     justify-content: center;
     padding: clamp(6.5rem, 15vh, 8.5rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 6vh, 4rem);
-    background: rgba(244, 239, 230, 0.6);
+    background: rgba(255, 255, 255, 0.6);
     opacity: 0;
     overflow-y: auto;
     transition: opacity 0.3s ease;
@@ -218,7 +218,7 @@
 
   .info-window .text-block--left {
     text-align: left;
-    background: rgba(244, 239, 230, 0.18);
+    background: rgba(255, 255, 255, 0.18);
     margin-left: 0;
   }
 
@@ -228,7 +228,7 @@
     display: flex;
     align-items: flex-start;
     background-image:
-      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
+      linear-gradient(100deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.88) 42%, rgba(255, 255, 255, 0.12) 70%, rgba(255, 255, 255, 0.05) 100%),
       url('web/images/Artist Statement/Sensing_bodies_portrait.webp');
     background-size: cover;
     background-position: center;
@@ -263,9 +263,9 @@
     align-items: flex-start;
     padding: clamp(6.5rem, 15vh, 8.5rem) 0 clamp(2rem, 6vh, 4rem);
     background-image:
-      linear-gradient(rgba(244, 239, 230, 0.75) 0%, rgba(244, 239, 230, 0) 22%),
-      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
-      linear-gradient(rgba(244, 239, 230, 0) 80%, var(--bg) 100%),
+      linear-gradient(rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 22%),
+      linear-gradient(100deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.88) 42%, rgba(255, 255, 255, 0.12) 70%, rgba(255, 255, 255, 0.05) 100%),
+      linear-gradient(rgba(255, 255, 255, 0) 80%, var(--bg) 100%),
       url('web/images/Artist Statement/Sensing_bodies_portrait.webp');
     background-size: cover;
     background-position: center;
@@ -340,9 +340,9 @@
     padding: clamp(6rem, 18vh, 10rem) clamp(1.5rem, 5vw, 4.5rem) clamp(4rem, 10vh, 6rem);
     border-top: 0;
     background:
-      linear-gradient(var(--bg) 0%, rgba(244, 239, 230, 0) 30%),
-      linear-gradient(rgba(244, 239, 230, 0) 75%, var(--bg) 100%),
-      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 35%, rgba(244, 239, 230, 0.1) 65%, rgba(244, 239, 230, 0) 100%),
+      linear-gradient(var(--bg) 0%, rgba(255, 255, 255, 0) 30%),
+      linear-gradient(rgba(255, 255, 255, 0) 75%, var(--bg) 100%),
+      linear-gradient(100deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.88) 35%, rgba(255, 255, 255, 0.1) 65%, rgba(255, 255, 255, 0) 100%),
       url('web/images/contact/contact-picture.webp') center / cover no-repeat;
   }
 
@@ -552,7 +552,7 @@
       align-items: flex-end;
       padding-top: 7.5rem;
       background-image:
-        linear-gradient(rgba(244, 239, 230, 0.35), rgba(244, 239, 230, 0.75)),
+        linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.75)),
         url('');
     }
     .info-window .text-block--about {
@@ -607,8 +607,8 @@
   /* Contact: full page like About — menu on top, picture behind, same fades, text centred */
   .info-overlay.info-overlay--full.info-overlay--contact {
     background:
-      linear-gradient(rgba(244, 239, 230, 0.75) 0%, rgba(244, 239, 230, 0) 22%),
-      linear-gradient(100deg, rgba(244, 239, 230, 0.97) 0%, rgba(244, 239, 230, 0.88) 42%, rgba(244, 239, 230, 0.12) 70%, rgba(244, 239, 230, 0.05) 100%),
+      linear-gradient(rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 22%),
+      linear-gradient(100deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.88) 42%, rgba(255, 255, 255, 0.12) 70%, rgba(255, 255, 255, 0.05) 100%),
       url('web/images/contact/contact-picture.webp') center / cover no-repeat;
   }
 
@@ -1049,7 +1049,7 @@
 
   /* Dark scrollbar in the windows, so no light strip shows on the right edge */
   .info-overlay {
-    scrollbar-color: #8a8478 #f4efe6;
+    scrollbar-color: #aaaaaa #ffffff;
   }
 
   /* Menu words: capital letter only at the beginning */
@@ -1174,7 +1174,7 @@ a[href], a[href] *, button, button * {
 }
 
 
-/* Home gallery layout: name left, Works + About right, filter pills, four-column picture grid */
+/* Home gallery layout: name left, Works + About right, filter pills, three-column picture grid */
 .menu { justify-content: flex-start; }
 #nav-home {
   margin: 0;
@@ -1187,7 +1187,7 @@ a[href], a[href] *, button, button * {
   font-size: 1rem !important;
   font-weight: 500;
   letter-spacing: 0;
-  color: #8a857d;
+  color: #9a9a9a;
 }
 #nav-work { margin-left: auto; }
 #nav-about { margin-left: clamp(1rem, 2vw, 2rem); }
@@ -1202,17 +1202,17 @@ a[href], a[href] *, button, button * {
 .work-labels button {
   padding: 0.45em 0.95em;
   border-radius: 999px;
-  background: #e9e2d6;
+  background: #f5f5f5;
   font-size: 1rem;
-  color: #3a3733;
+  color: #444444;
   transition: background 0.2s ease, color 0.2s ease;
 }
-.work-labels button:hover { background: #ddd4c6; color: #000000; }
-.work-labels button[aria-pressed="true"] { background: #111111; color: #f4efe6; }
+.work-labels button:hover { background: #ebebeb; color: #000000; }
+.work-labels button[aria-pressed="true"] { background: #171717; color: #ffffff; }
 
 .work-rows {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1rem, 2.4vh, 1.5rem) 0.75rem;
   padding: 0 10.8vw 6rem;
 }
@@ -1257,7 +1257,7 @@ body.on-gallery .gallery-foot {
   padding: 1.1rem var(--edge);
   background: var(--bg);
   font-size: 0.85rem;
-  color: #6f6a62;
+  color: #6b6b6b;
 }
 
 @media (max-width: 900px) {
