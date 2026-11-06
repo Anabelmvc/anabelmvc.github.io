@@ -1629,6 +1629,24 @@ a[href], a[href] *, button, button * {
   cursor: pointer;
 }
 
+/* Home sits in the exact middle of the menu; About moves to the left edge */
+.detail-header .detail-menu { position: relative; }
+.detail-menu .detail-menu-item:nth-child(1) {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
+.detail-menu .detail-menu-item:nth-child(2) { margin-left: 0; }
+@media (max-width: 600px) {
+  .detail-menu .detail-menu-item:nth-child(1) { position: relative !important; margin: 0 0 0 0.8rem; order: 1; }
+  .detail-menu .detail-menu-item:nth-child(2) { order: 0; }
+  .detail-menu .detail-menu-item:nth-child(3) { order: 2; }
+}
 
 /* Previous / next work: the arrow tips sit on the same margins as the menu.
    The -18px cancels the empty space inside the icon, so the drawn arrow lines up, not its box. */
@@ -1657,23 +1675,6 @@ a[href], a[href] *, button, button * {
   .project-arrow--prev { left: var(--edge); }
   .project-arrow--next { left: auto; right: var(--edge); }
 }
-
-/* Same menu as the Home gallery: name left, Works + About right */
-.detail-menu .detail-menu-item:nth-child(1) {
-  margin: 0;
-  font-size: clamp(1.15rem, 1.35vw, 1.4rem) !important;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.detail-menu .detail-menu-item:nth-child(2),
-.detail-menu .detail-menu-item:nth-child(3) {
-  font-size: 1rem !important;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.detail-menu .detail-menu-item:nth-child(2) { margin-left: auto; }
-.detail-menu .detail-menu-item:nth-child(3) { margin-left: clamp(1rem, 2vw, 2rem); margin-right: 0; color: #9a9a9a; }
-.detail-menu .detail-menu-item:nth-child(3):hover { color: #ff5fa2; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1778,9 +1779,9 @@ a[href], a[href] *, button, button * {
     <a class="project-arrow project-arrow--next" href="#" aria-label="Next work"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><polyline points="4,8 12,16 20,8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     <header class="detail-header">
       <nav class="detail-menu" aria-label="Main navigation">
-        <a class="detail-menu-item" href="home2.html">Anabel Miryana</a>
-        <a class="detail-menu-item" href="home2.html#work">Works</a>
+        <a class="detail-menu-item" href="home2.html">Home</a>
       <a class="detail-menu-item" href="home2.html#about">About / CV</a>
+        <a class="detail-menu-item" href="home2.html#work">Works</a>
       </nav>
     </header>
     <div class="text-block transitions-layout" data-work="1">
