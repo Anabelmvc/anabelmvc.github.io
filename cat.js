@@ -59,7 +59,7 @@
   function draw(name) {
     var rows = FRAMES[name];
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = COLOR;
+    ctx.fillStyle = document.body.classList.contains('poster-on') ? '#ffffff' : COLOR;
     for (var y = 0; y < rows.length; y++) {
       for (var x = 0; x < rows[y].length; x++) {
         if (rows[y][x] === '#') ctx.fillRect(x * PIXEL, y * PIXEL, PIXEL, PIXEL);

@@ -1230,12 +1230,67 @@ a[href], a[href] *, button, button * {
   font-style: italic;
 }
 
+
+/* Home poster: black grid paper, pixel-circle covers, black and white labels.
+   One grid cell = 22px; everything is placed on whole cells. */
+#home-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  z-index: 1;
+  background-color: #0b0b0b;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.42) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.42) 1px, transparent 1px);
+  background-size: 22px 22px;
+  overflow: hidden;
+}
+.poster-item {
+  position: absolute;
+  display: block;
+}
+.poster-item img,
+.poster-item .poster-depth {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.poster-item img { object-fit: cover; transition: filter 0.3s ease; }
+/* the stepped shadow one cell down and right, like the extruded edges on the poster */
+.poster-item .poster-depth { background: #3b3b3b; transform: translate(22px, 22px); }
+.poster-item:hover img { filter: brightness(1.12); }
+.poster-label {
+  position: absolute;
+  z-index: 20;
+  padding: 0.3em 0.7em;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  background: #0b0b0b;
+  color: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.poster-label:hover { color: #ff5fa2; border-color: #ff5fa2; }
+
+/* Menu sits straight on the poster in white; windows keep their white bar and black words */
+body:not(.window-open) .site-header { background: none !important; }
+body:not(.window-open) .menu-item { color: #ffffff; }
+body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
 
+
+  <!-- Home: cover pictures cut into pixel circles on a black grid, each with its title label -->
+  <div id="home-poster" aria-label="Works"></div>
 
   <header class="site-header">
     <nav class="menu" aria-label="Main navigation">
@@ -1503,7 +1558,7 @@ a[href], a[href] *, button, button * {
 
     // Home: close any open window and go back to the home screen
     function goHome() {
-      openInfo('work', document.getElementById('nav-work'));
+      if (!infoOverlay.hidden) closeInfo();
     }
 
     var infoOverlay = document.getElementById('info-overlay');
@@ -1512,7 +1567,6 @@ a[href], a[href] *, button, button * {
     var lastTrigger = null;
     var closeTimer = null;
 
-    var currentKey = null;
     function openInfo(key, trigger) {
       var tpl = document.getElementById('tpl-' + key);
       if (!tpl) return;
@@ -1520,7 +1574,6 @@ a[href], a[href] *, button, button * {
       if (closeTimer) { window.clearTimeout(closeTimer); closeTimer = null; }
 
       lastTrigger = trigger || null;
-      currentKey = key;
       infoContent.innerHTML = '';
       infoContent.appendChild(tpl.content.cloneNode(true));
       watchWorkImages();
@@ -1590,10 +1643,10 @@ a[href], a[href] *, button, button * {
       infoOverlay.scrollTop = 0;
     });
     infoOverlay.addEventListener('click', function (event) {
-      if (event.target === infoOverlay && currentKey !== 'work') goHome();
+      if (event.target === infoOverlay) closeInfo();
     });
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && currentKey !== 'work') goHome();
+      if (event.key === 'Escape' && !infoOverlay.hidden) closeInfo();
     });
 
     // Focus trap: keep Tab focus inside the open dialog
@@ -1642,8 +1695,6 @@ a[href], a[href] *, button, button * {
     var hashKey = window.location.hash.slice(1);
     if (['work', 'about', 'artist-statement'].indexOf(hashKey) !== -1) {
       openInfo(hashKey, document.getElementById('nav-' + hashKey));
-    } else {
-      goHome(); // Home shows the works, one per row
     }
   </script>
 
@@ -1666,6 +1717,94 @@ a[href], a[href] *, button, button * {
       window.addEventListener(type, playAll, { passive: true, capture: true });
     });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) playAll(); });
+  })();
+</script>
+<script>
+  /* Builds the Home poster from the works list, so new works appear here by themselves */
+  (function () {
+    var poster = document.getElementById('home-poster');
+    var tpl = document.getElementById('tpl-work');
+    if (!poster || !tpl) return;
+    var C = 22; // grid cell
+    var works = [].map.call(tpl.content.querySelectorAll('.work-row'), function (a) {
+      var img = a.querySelector('img');
+      return { href: a.getAttribute('href'), title: a.querySelector('h3').textContent.trim(), src: img.getAttribute('src'), alt: img.getAttribute('alt') || '' };
+    });
+    // where each circle goes on a wide screen: centre x, centre y (share of width / height), radius (share of width)
+    var WIDE = [
+      [0.22, 0.20, 0.15], [0.55, 0.14, 0.10], [0.81, 0.27, 0.14], [0.42, 0.41, 0.12], [0.14, 0.53, 0.11],
+      [0.71, 0.56, 0.13], [0.36, 0.72, 0.10], [0.88, 0.79, 0.10], [0.15, 0.87, 0.09], [0.58, 0.89, 0.11]
+    ];
+    // a circle made of whole grid cells, as a clip path
+    function pixelCircle(n) {
+      var r = n / 2, d = '';
+      for (var j = 0; j < n; j++) {
+        var y = j + 0.5 - r, half = Math.sqrt(Math.max(0, r * r - y * y));
+        var x0 = Math.round(r - half), x1 = Math.round(r + half);
+        if (x1 > x0) d += 'M' + x0 * C + ' ' + j * C + 'h' + (x1 - x0) * C + 'v' + C + 'h' + (x0 - x1) * C + 'z';
+      }
+      return "path('" + d + "')";
+    }
+    function snap(v) { return Math.round(v / C) * C; }
+    function build() {
+      var W = document.documentElement.clientWidth, H = window.innerHeight, P, spots;
+      if (W >= 700) {
+        P = Math.max(H * 1.5, W * 0.85);
+        spots = WIDE.map(function (s) { return { cx: s[0] * W, cy: s[1] * P, r: s[2] * W }; });
+        // move everything up or down so the highest picture starts just under the menu
+        var top = Math.min.apply(null, spots.map(function (s) { return s.cy - s.r; }));
+        spots.forEach(function (s) { s.cy += 120 - top; });
+      } else {
+        var r = W * 0.3;
+        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: 150 + r + i * r * 1.55, r: r }; });
+        P = spots[spots.length - 1].cy + r + 120;
+      }
+      poster.innerHTML = '';
+      var bottom = 0;
+      works.forEach(function (w, i) {
+        var s = spots[i % spots.length];
+        var n = Math.max(6, Math.round((s.r * 2) / C));
+        var x = snap(s.cx - (n * C) / 2), y = snap(s.cy - (n * C) / 2), size = n * C;
+        var shape = pixelCircle(n);
+        bottom = Math.max(bottom, y + size + C);
+        var a = document.createElement('a');
+        a.className = 'poster-item';
+        a.href = w.href;
+        a.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + size + 'px;height:' + size + 'px;z-index:' + (12 - i);
+        a.setAttribute('aria-label', w.title);
+        var depth = document.createElement('span');
+        depth.className = 'poster-depth';
+        var img = document.createElement('img');
+        img.src = w.src;
+        img.alt = w.alt;
+        img.loading = 'lazy';
+        [depth, img].forEach(function (el) { el.style.clipPath = shape; el.style.webkitClipPath = shape; });
+        a.appendChild(depth);
+        a.appendChild(img);
+        poster.appendChild(a);
+        var label = document.createElement('a');
+        label.className = 'poster-label';
+        label.href = w.href;
+        label.textContent = w.title;
+        poster.appendChild(label);
+        var lx = snap(x + size * 0.58), ly = snap(y + size * 0.82);
+        lx = Math.max(C, Math.min(lx, W - label.offsetWidth - C));
+        label.style.left = lx + 'px';
+        label.style.top = ly + 'px';
+      });
+      // the poster ends a few cells below the lowest picture
+      poster.style.height = Math.max(snap(H), snap(bottom + C * 3)) + 'px';
+    }
+    build();
+    var t;
+    window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(build, 150); });
+  })();
+
+  // The cat turns white on the black poster
+  (function () {
+    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open')); }
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    sync();
   })();
 </script>
 <script src="cat.js"></script>
