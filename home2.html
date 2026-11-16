@@ -1076,7 +1076,7 @@
 
   /* =========================================================
      COHESIVE LAYOUT: one beige background and one grid for everything.
-     --edge = the margin on both sides (menu, About, CV, Works, Artistic research)
+     --edge = the margin on both sides (menu, About, CV, Works)
   ========================================================= */
   :root { --edge: 4vw; }
 
@@ -1150,23 +1150,6 @@
     padding-right: var(--edge) !important;
   }
 
-  /* Artistic research: full page like About and Works, text on the grid, left-aligned */
-  .info-overlay--full .info-window .text-block:not(.text-block--about) {
-    width: auto;
-    max-width: none;
-    margin: 0 var(--edge) !important;
-    padding: 0 !important;
-    text-align: left;
-  }
-
-  /* Artistic research title: same big bold style as the project titles */
-  .info-overlay--full .info-window .text-block:not(.text-block--about) h2 {
-    font-size: clamp(2.6rem, 4.2vw, 5.2rem);
-    line-height: 1.12;
-    letter-spacing: -0.01em;
-    text-transform: none;
-    margin: 0 0 2.5rem;
-  }
 
 /* Everything you can click shows the hand */
 a[href], a[href] *, button, button * {
@@ -1403,14 +1386,6 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
     </div>
   </template>
 
-  <template id="tpl-artist-statement">
-    <div class="text-block">
-      <h2>Artistic research</h2>
-      <!--img class="artist-portrait" src="web/images/Artist Statement/Sensing_bodies_portrait.webp" alt="Anabel Miryana portrait for the artist statement"-->
-      <p>&ldquo;When I emigrated, I left behind the body I had there. I abandoned an identity that I will never get back, forgetting a part of me that was mine and can never be again. Identities I no longer own, but once were.&rdquo;</p>
-      <p>Immigration has been a core theme in my research, and this experience shapes my concepts. I see technology as an immigration process, shaping and taking form in different contexts: we adapt to technology, technology adapts to us, and I adapt to this new reality while carrying my culture with me. I see it as a process where technology becomes a tool to transform identity, rewrite history, or even immigrate into a new digital world. That is where my passion for interactive wearables comes from.</p>
-    </div>
-  </template>
 
 
   <template id="tpl-about">
@@ -1578,7 +1553,7 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
       infoContent.appendChild(tpl.content.cloneNode(true));
       watchWorkImages();
       infoWindow.classList.toggle('info-window--about', key === 'about');
-      var fullPage = key === 'about' || key === 'work' || key === 'artist-statement';
+      var fullPage = key === 'about' || key === 'work';
       infoOverlay.classList.toggle('info-overlay--full', fullPage);
       document.body.classList.toggle('full-open', fullPage);
 
@@ -1691,9 +1666,9 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
       }
     });
 
-    // Si llegamos con #work, #about, #artist-statement (desde un proyecto), abrir ese popup
+    // Si llegamos con #work o #about (desde un proyecto), abrir ese popup
     var hashKey = window.location.hash.slice(1);
-    if (['work', 'about', 'artist-statement'].indexOf(hashKey) !== -1) {
+    if (['work', 'about'].indexOf(hashKey) !== -1) {
       openInfo(hashKey, document.getElementById('nav-' + hashKey));
     }
   </script>
