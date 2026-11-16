@@ -1214,7 +1214,7 @@ a[href], a[href] *, button, button * {
 }
 
 
-/* Home poster: blue circuit background, pixel-circle covers, black and white labels.
+/* Home poster: blue circuit background with a dark blue grid, pixel-circle covers, black and white labels.
    The circles are built from 11px steps. */
 #home-poster {
   position: absolute;
@@ -1225,10 +1225,14 @@ a[href], a[href] *, button, button * {
   z-index: 1;
   /* behind the grid: the blue circuit picture, blurred and washed in its own blue */
   background-color: #2a14d8;
-  background-image: url('web/images/home/home-background.webp');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  /* grid lines in a darker blue, on top of the picture */
+  background-image:
+    linear-gradient(to right, rgba(14, 6, 96, 0.6) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 6, 96, 0.6) 1px, transparent 1px),
+    url('web/images/home/home-background.webp');
+  background-size: 11px 11px, 11px 11px, cover;
+  background-position: 0 0, 0 0, center;
+  background-attachment: scroll, scroll, fixed;
   overflow: hidden;
 }
 .poster-item {
