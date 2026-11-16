@@ -2803,6 +2803,18 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
 /* over About the menu gets its white bar and black words, as before */
 body.in-about .site-header { background: #ffffff !important; }
 body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !important; }
+
+/* Every description text in the works is one size, the same as the essay text */
+#works-flow :is(.transitions-copy, .transitions-meta, .transitions-essay, .transitions-summary, .transitions-split-text,
+  .subwork-text, .project-credits, .text-divider, .sensing-bodies-summary) :is(p, li),
+#works-flow :is(.transitions-meta p, .video-credit, .sensing-bodies-summary) {
+  font-size: clamp(1rem, 1.2vw, 1.28rem) !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0 !important;
+  font-weight: 400;
+}
+/* questions stay bigger, like small headings */
+#works-flow .transitions-question { font-size: 1.7rem !important; line-height: 1.3 !important; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 </head>
