@@ -2781,6 +2781,28 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.65);
 }
 #works-flow p { line-height: 1.6; }
+
+/* About / CV at the end of Home: the same About pages as before, in the page flow */
+#about-inline {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+}
+#about-inline .info-overlay {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  z-index: auto !important;
+  background: none !important;
+}
+#about-inline .info-window { transform: none !important; opacity: 1 !important; }
+/* over About the menu gets its white bar and black words, as before */
+body.in-about .site-header { background: #ffffff !important; }
+body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !important; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 </head>
@@ -3280,10 +3302,19 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
     </div>
   </section>
 
+  <!-- About / CV at the very end, after all the works (filled from tpl-about) -->
+  <section id="about-inline" aria-label="About / CV">
+    <div class="info-overlay info-overlay--full about-inline-wrap">
+      <div class="info-window info-window--about">
+        <div class="info-content"></div>
+      </div>
+    </div>
+  </section>
+
   <header class="site-header">
     <nav class="menu" aria-label="Main navigation">
       <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Home</button>
-      <button class="menu-item" type="button" id="nav-about" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('about', this)">About / CV</button>
+      <button class="menu-item" type="button" id="nav-about" onclick="goAbout()">About / CV</button>
       <button class="menu-item" type="button" id="nav-work" onclick="goWorks()">Works</button>
     </nav>
   </header>
@@ -3537,6 +3568,13 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
     }
 
     // Home: close any open window and go back to the home screen
+    // About / CV = the section at the very end of the page
+    function goAbout() {
+      if (!infoOverlay.hidden) closeInfo();
+      var about = document.getElementById('about-inline');
+      if (about) window.scrollTo({ top: about.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' });
+    }
+
     // Works = the part of Home under the video: title, skill words and the pixel-circle pictures
     function goWorks() {
       if (!infoOverlay.hidden) closeInfo();
@@ -3682,8 +3720,8 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
     var hashKey = window.location.hash.slice(1);
     if (hashKey === 'work') {
       window.addEventListener('load', goWorks);
-    } else if (['about'].indexOf(hashKey) !== -1) {
-      openInfo(hashKey, document.getElementById('nav-' + hashKey));
+    } else if (hashKey === 'about') {
+      window.addEventListener('load', goAbout);
     }
   </script>
 
@@ -3814,7 +3852,7 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
 
   // The cat turns white on the black poster
   (function () {
-    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open')); }
+    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open') && !document.body.classList.contains('in-about')); }
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     sync();
   })();
@@ -3879,6 +3917,30 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
     });
     zoom.addEventListener('click', close);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+</script>
+<script>
+  /* Fill the About section at the end of Home and keep it right after the works */
+  (function () {
+    var about = document.getElementById('about-inline');
+    var tpl = document.getElementById('tpl-about');
+    var flow = document.getElementById('works-flow');
+    if (!about || !tpl || !flow) return;
+    about.querySelector('.info-content').appendChild(tpl.content.cloneNode(true));
+    function place() { about.style.top = (flow.offsetTop + flow.offsetHeight) + 'px'; }
+    place();
+    if ('ResizeObserver' in window) new ResizeObserver(place).observe(flow);
+    window.addEventListener('load', place);
+    // its arrows scroll sideways through portrait, CV and Friends
+    about.addEventListener('click', function (e) {
+      var arrow = e.target.closest('[data-page]');
+      if (!arrow) return;
+      var track = about.querySelector('.about-track');
+      track.scrollTo({ left: Number(arrow.dataset.page) * track.clientWidth, behavior: 'smooth' });
+    });
+    function inAbout() { document.body.classList.toggle('in-about', window.scrollY + 40 > about.offsetTop); }
+    window.addEventListener('scroll', inAbout, { passive: true });
+    inAbout();
   })();
 </script>
 <script src="cat.js"></script>
