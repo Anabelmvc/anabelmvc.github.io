@@ -1362,6 +1362,19 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 }
 .poster-title { padding-top: clamp(2.5rem, 7vh, 4.5rem); }
 
+
+/* Menu hover: no colour change, the word just shines a little */
+.menu-item { transition: text-shadow 0.3s ease !important; }
+body:not(.window-open) .menu-item:hover,
+body:not(.window-open) .menu-item:focus-visible {
+  color: #ffffff !important;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.85), 0 0 16px rgba(255, 255, 255, 0.45) !important;
+}
+body.window-open .menu-item:hover,
+body.window-open .menu-item:focus-visible {
+  color: #000000 !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.3), 0 0 14px rgba(0, 0, 0, 0.15) !important;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1692,6 +1692,14 @@ a[href], a[href] *, button, button * {
 @media (max-width: 600px) {
   .detail-menu-item { font-size: 0.85rem !important; }
 }
+
+/* Menu hover: no colour change, the word just shines a little */
+.detail-menu-item { transition: text-shadow 0.3s ease !important; }
+.detail-menu .detail-menu-item:hover,
+.detail-menu .detail-menu-item:focus-visible {
+  color: #000000 !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.3), 0 0 14px rgba(0, 0, 0, 0.15) !important;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
