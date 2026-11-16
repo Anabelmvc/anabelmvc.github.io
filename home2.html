@@ -1224,9 +1224,11 @@ a[href], a[href] *, button, button * {
   min-height: 100vh;
   z-index: 1;
   /* behind the grid: the blue circuit picture, blurred and washed in its own blue */
-  background-color: #2a14d8;
-  /* the grid is drawn by a script on .poster-grid, so it can move with the cursor */
-  background-image: url('web/images/home/home-background.webp');
+  /* the circuit picture, sharp but very dimmed; the grid is drawn by a script on .poster-grid */
+  background-color: #000000;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
+    url('web/images/home/home-background-sharp.webp');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
