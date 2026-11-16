@@ -1280,6 +1280,60 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 @media (max-width: 600px) {
   .menu-item { font-size: 0.85rem !important; }
 }
+
+/* Home title: like the KABK flyer, regular weight, white, two centred lines */
+.poster-title {
+  position: relative;
+  z-index: 25;
+  margin: 0;
+  padding: clamp(4rem, 9vh, 5.5rem) var(--edge) 0;
+  font-size: clamp(1.7rem, 3.4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-transform: none;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+/* Ethereal light: soft glows drifting slowly behind the grid */
+.poster-mist {
+  position: fixed;
+  inset: -20vmax;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.poster-mist::before,
+.poster-mist::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+.poster-mist::before {
+  width: 70vmax; height: 55vmax;
+  left: 5%; top: 10%;
+  background: radial-gradient(closest-side, rgba(255, 120, 220, 0.30), rgba(255, 120, 220, 0));
+  animation: mist-a 38s ease-in-out infinite alternate;
+}
+.poster-mist::after {
+  width: 60vmax; height: 60vmax;
+  right: 0; bottom: 5%;
+  background: radial-gradient(closest-side, rgba(170, 215, 255, 0.26), rgba(170, 215, 255, 0));
+  animation: mist-b 46s ease-in-out infinite alternate;
+}
+@keyframes mist-a {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(35vmax, 18vmax) scale(1.25); }
+}
+@keyframes mist-b {
+  from { transform: translate(0, 0) scale(1.1); }
+  to   { transform: translate(-30vmax, -22vmax) scale(0.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .poster-mist::before, .poster-mist::after { animation: none; }
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1288,7 +1342,10 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 
 
   <!-- Home: cover pictures cut into pixel circles on a black grid, each with its title label -->
-  <div id="home-poster" aria-label="Works"></div>
+  <div id="home-poster" aria-label="Works">
+    <div class="poster-mist" aria-hidden="true"></div>
+    <h1 class="poster-title">Anabel Miryana<br>Interactive artist and designer</h1>
+  </div>
 
   <header class="site-header">
     <nav class="menu" aria-label="Main navigation">
@@ -1738,15 +1795,18 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
     function snap(v) { return Math.round(v / C) * C; }
     function build() {
       var W = document.documentElement.clientWidth, H = window.innerHeight, P, spots;
+      // pictures start below the title
+      var title = poster.querySelector('.poster-title');
+      var below = title ? title.offsetTop + title.offsetHeight + 30 : 80;
       if (W >= 700) {
         P = Math.max(H * 1.5, W * 0.85);
         spots = WIDE.map(function (s) { return { cx: s[0] * W, cy: s[1] * P, r: s[2] * W }; });
         // move everything up or down so the highest picture starts just under the menu
         var top = Math.min.apply(null, spots.map(function (s) { return s.cy - s.r; }));
-        spots.forEach(function (s) { s.cy += 80 - top; });
+        spots.forEach(function (s) { s.cy += below - top; });
       } else {
         var r = W * 0.3;
-        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: 90 + r + i * r * 1.55, r: r }; });
+        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: below + r + i * r * 1.55, r: r }; });
         P = spots[spots.length - 1].cy + r + 120;
       }
       poster.querySelectorAll('.poster-item, .poster-label').forEach(function (el) { el.remove(); });
