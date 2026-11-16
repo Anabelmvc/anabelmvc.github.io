@@ -1998,6 +1998,40 @@ body.window-open .menu-item:focus-visible {
     resize();
   })();
 </script>
+<script>
+  /* Menu words scramble: letters and numbers flicker, then settle back into the word.
+     Plays when the mouse reaches a word and when it is pressed. */
+  (function () {
+    var SEL = '.menu-item';
+    var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function scramble(el) {
+      if (still || el.dataset.scrambling) return;
+      var text = el.dataset.text || (el.dataset.text = el.textContent);
+      el.setAttribute('aria-label', text);
+      el.dataset.scrambling = '1';
+      el.style.minWidth = el.getBoundingClientRect().width + 'px';
+      var start = performance.now(), DURATION = 420;
+      (function frame(now) {
+        var p = Math.min(1, (now - start) / DURATION), out = '';
+        for (var i = 0; i < text.length; i++) {
+          var ch = text[i];
+          // letters settle one by one from left to right; spaces and slashes stay put
+          out += (ch === ' ' || ch === '/' || i < p * text.length) ? ch : CHARS[Math.floor(Math.random() * CHARS.length)];
+        }
+        el.textContent = out;
+        if (p < 1) requestAnimationFrame(frame);
+        else { el.textContent = text; el.style.minWidth = ''; delete el.dataset.scrambling; }
+      })(start);
+    }
+    document.querySelectorAll(SEL).forEach(function (el) {
+      el.style.whiteSpace = 'nowrap';
+      el.addEventListener('pointerenter', function () { scramble(el); });
+      el.addEventListener('pointerdown', function () { delete el.dataset.scrambling; scramble(el); });
+      
+    });
+  })();
+</script>
 <script src="cat.js"></script>
 </body>
 </html>
