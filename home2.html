@@ -1421,7 +1421,7 @@ body.window-open .menu-item:focus-visible {
     <nav class="menu" aria-label="Main navigation">
       <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Home</button>
       <button class="menu-item" type="button" id="nav-about" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('about', this)">About / CV</button>
-      <button class="menu-item" type="button" id="nav-work" aria-haspopup="dialog" aria-controls="info-overlay" aria-expanded="false" onclick="openInfo('work', this)">Works</button>
+      <button class="menu-item" type="button" id="nav-work" onclick="goWorks()">Works</button>
     </nav>
   </header>
 
@@ -1674,6 +1674,13 @@ body.window-open .menu-item:focus-visible {
     }
 
     // Home: close any open window and go back to the home screen
+    // Works = the part of Home under the video: title, skill words and the pixel-circle pictures
+    function goWorks() {
+      if (!infoOverlay.hidden) closeInfo();
+      var area = document.querySelector('.poster-title');
+      if (area) window.scrollTo({ top: area.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
+    }
+
     function goHome() {
       if (!infoOverlay.hidden) closeInfo();
     }
@@ -1808,9 +1815,11 @@ body.window-open .menu-item:focus-visible {
       }
     });
 
-    // Si llegamos con #work o #about (desde un proyecto), abrir ese popup
+    // Coming from a project: #work goes to the works area, #about opens About
     var hashKey = window.location.hash.slice(1);
-    if (['work', 'about'].indexOf(hashKey) !== -1) {
+    if (hashKey === 'work') {
+      window.addEventListener('load', goWorks);
+    } else if (['about'].indexOf(hashKey) !== -1) {
       openInfo(hashKey, document.getElementById('nav-' + hashKey));
     }
   </script>
