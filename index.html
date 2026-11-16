@@ -1686,7 +1686,8 @@ a[href], a[href] *, button, button * {
   padding-bottom: 0.85rem !important;
 }
 .detail-menu-item {
-  font-size: 1rem !important;
+  /* same size as the menu on vasiliaso.cargo.site: about 25px on a 1920px-wide screen */
+  font-size: clamp(1.05rem, 1.3vw, 1.6rem) !important;
 }
 @media (max-width: 600px) {
   .detail-menu-item { font-size: 0.85rem !important; }

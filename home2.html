@@ -1269,13 +1269,14 @@ body:not(.window-open) .site-header { background: none !important; }
 body:not(.window-open) .menu-item { color: #ffffff; }
 body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 
-/* Smaller menu bar, like the small bold menu on the RA pages */
+/* Menu bar: thin bar, words the size of the menu on vasiliaso.cargo.site */
 .site-header {
   padding-top: 0.85rem !important;
   padding-bottom: 0.85rem !important;
 }
 .menu-item {
-  font-size: 1rem !important;
+  /* same size as the menu on vasiliaso.cargo.site: about 25px on a 1920px-wide screen */
+  font-size: clamp(1.05rem, 1.3vw, 1.6rem) !important;
 }
 @media (max-width: 600px) {
   .menu-item { font-size: 0.85rem !important; }
