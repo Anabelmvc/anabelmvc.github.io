@@ -1311,13 +1311,13 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 .poster-mist::before {
   width: 70vmax; height: 55vmax;
   left: 5%; top: 10%;
-  background: radial-gradient(closest-side, rgba(255, 120, 220, 0.30), rgba(255, 120, 220, 0));
+  background: radial-gradient(closest-side, rgba(255, 120, 220, 0.21), rgba(255, 120, 220, 0));
   animation: mist-a 38s ease-in-out infinite alternate;
 }
 .poster-mist::after {
   width: 60vmax; height: 60vmax;
   right: 0; bottom: 5%;
-  background: radial-gradient(closest-side, rgba(170, 215, 255, 0.26), rgba(170, 215, 255, 0));
+  background: radial-gradient(closest-side, rgba(170, 215, 255, 0.18), rgba(170, 215, 255, 0));
   animation: mist-b 46s ease-in-out infinite alternate;
 }
 @keyframes mist-a {
@@ -2763,7 +2763,7 @@ html #works-flow {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
+    linear-gradient(rgba(0, 0, 0, 0.83), rgba(0, 0, 0, 0.83)),
     url('web/images/home/home-background-sharp.webp');
   background-size: 4px 4px, 4px 4px, cover, cover;
   background-position: 0 0, 0 0, center, center;
@@ -2814,7 +2814,35 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
   font-weight: 400;
 }
 /* questions stay bigger, like small headings */
-#works-flow .transitions-question { font-size: 1.7rem !important; line-height: 1.3 !important; }
+#works-flow .transitions-question, #works-flow p.transitions-question { font-size: 1.7rem !important; line-height: 1.3 !important; }
+
+/* About at the end of Home: portrait, then the CV underneath, then Friends (no sideways scrolling here) */
+#about-inline .about-track {
+  display: block !important;
+  height: auto !important;
+  overflow: visible !important;
+  scroll-snap-type: none !important;
+}
+#about-inline .about-track > .about-hero { height: 100vh; height: 100dvh; overflow: visible; }
+#about-inline .about-cv-page { height: auto !important; }
+#about-inline .about-cv-page > .about-cv { height: auto !important; overflow: visible !important; }
+#about-inline .about-cv-page:has(.cv-friends) > .about-cv { min-height: 100vh; min-height: 100dvh; }
+#about-inline [data-page] { display: none !important; }
+/* the CV button sits next to About */
+#nav-cv { margin-left: clamp(1.5rem, 4vw, 3.5rem); }
+@media (max-width: 600px) { #nav-cv { margin-left: 0.8rem; order: 0; } }
+
+#nav-friends { margin-left: clamp(1.5rem, 4vw, 3.5rem); }
+@media (max-width: 600px) { #nav-friends { margin-left: 0.8rem; order: 0; } }
+
+/* the small labels under each work title read as normal text */
+#works-flow .blue-title-kicker {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: clamp(1rem, 1.2vw, 1.28rem) !important;
+  font-weight: 400 !important;
+}
+#works-flow video { height: auto; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 </head>
@@ -2858,7 +2886,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/C0017.mp4" poster="web/posters/c0017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/C0017.mp4" poster="web/posters/c0017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
         <p class="video-credit">Recorded by Pawel Poluwtki</p>
         <p class="video-credit">Editing and video soundtrack by Simon Perjessy</p>
       </div>
@@ -2972,7 +3000,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/Soundscape Trailer.mp4" poster="web/posters/soundscape-trailer.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/Soundscape Trailer.mp4" poster="web/posters/soundscape-trailer.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="transitions-gallery">
@@ -3026,7 +3054,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/final2.mp4" poster="web/posters/final2.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/final2.mp4" poster="web/posters/final2.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
     </div>
     <div class="text-block transitions-layout active" data-work="6" id="work-6">
@@ -3054,23 +3082,23 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/ecosenda/VID_20250409_110340_00_017.mp4" poster="web/posters/vid-20250409-110340-00-017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="1280" data-src="web/mp4/ecosenda/VID_20250409_110340_00_017.mp4" poster="web/posters/vid-20250409-110340-00-017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/ecosenda/LRV_20250409_110340_01_017.mp4" poster="web/posters/lrv-20250409-110340-01-017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="640" data-src="web/mp4/ecosenda/LRV_20250409_110340_01_017.mp4" poster="web/posters/lrv-20250409-110340-01-017.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/ecosenda/LRV_20250409_111518_01_018.mp4" poster="web/posters/lrv-20250409-111518-01-018.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="640" data-src="web/mp4/ecosenda/LRV_20250409_111518_01_018.mp4" poster="web/posters/lrv-20250409-111518-01-018.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/ecosenda/LRV_20250409_113627_01_020.mp4" poster="web/posters/lrv-20250409-113627-01-020.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="640" data-src="web/mp4/ecosenda/LRV_20250409_113627_01_020.mp4" poster="web/posters/lrv-20250409-113627-01-020.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/ecosenda/ecosenda.mp4" poster="web/posters/ecosenda.webp" preload="none" data-no-audio muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/ecosenda/ecosenda.mp4" poster="web/posters/ecosenda.webp" preload="none" data-no-audio muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
@@ -3108,11 +3136,11 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/cyberfeminism.mp4" poster="web/posters/cyberfeminism.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="1024" data-src="web/mp4/cyberfeminism.mp4" poster="web/posters/cyberfeminism.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/WhatsApp%20Video%202025-05-05%20at%2009.07.22.mp4" poster="web/posters/whatsapp-video-2025-05-05-at-09-07-22.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="724" data-src="web/mp4/WhatsApp%20Video%202025-05-05%20at%2009.07.22.mp4" poster="web/posters/whatsapp-video-2025-05-05-at-09-07-22.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
     </div>
     <div class="text-block transitions-layout active" data-work="10" id="work-10">
@@ -3137,7 +3165,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/images/100 days of hydra/Main Edit.mp4" poster="web/posters/main-edit.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/images/100 days of hydra/Main Edit.mp4" poster="web/posters/main-edit.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
     </div>
     <div class="text-block transitions-layout active" data-work="7" id="work-7">
@@ -3156,7 +3184,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/WhatsApp%20Video%202025-05-25%20at%2021.06.47.mp4" poster="web/posters/whatsapp-video-2025-05-25-at-21-06-47.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="724" data-src="web/mp4/WhatsApp%20Video%202025-05-25%20at%2021.06.47.mp4" poster="web/posters/whatsapp-video-2025-05-25-at-21-06-47.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="transitions-gallery">
@@ -3184,7 +3212,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/IMG_0138.mp4" poster="web/posters/img-0138.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/IMG_0138.mp4" poster="web/posters/img-0138.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
     </div>
     <div class="text-block transitions-layout active" data-work="12" id="work-12">
@@ -3208,7 +3236,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       </div>
 
       <div class="feature-video transitions-video">
-        <video data-src="web/mp4/transhumanism (tiny file) ‐ Hecho con Clipchamp.mp4" poster="web/posters/transhumanism-tiny-file-hecho-con-clipchamp.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <video width="1280" height="720" data-src="web/mp4/transhumanism (tiny file) ‐ Hecho con Clipchamp.mp4" poster="web/posters/transhumanism-tiny-file-hecho-con-clipchamp.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
       </div>
 
       <div class="transitions-essay transitions-essay--middle transitions-essay--wide">
@@ -3326,7 +3354,9 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
   <header class="site-header">
     <nav class="menu" aria-label="Main navigation">
       <button class="menu-item" type="button" id="nav-home" onclick="goHome()">Home</button>
-      <button class="menu-item" type="button" id="nav-about" onclick="goAbout()">About / CV</button>
+      <button class="menu-item" type="button" id="nav-about" onclick="goAbout()">About</button>
+      <button class="menu-item" type="button" id="nav-cv" onclick="goCV()">CV</button>
+      <button class="menu-item" type="button" id="nav-friends" onclick="goFriends()">Friends</button>
       <button class="menu-item" type="button" id="nav-work" onclick="goWorks()">Works</button>
     </nav>
   </header>
@@ -3580,19 +3610,28 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
     }
 
     // Home: close any open window and go back to the home screen
-    // About / CV = the section at the very end of the page
-    function goAbout() {
+    // glide to an element; if the page grew while scrolling (videos, pictures loading), correct once at the end
+    function glideTo(el, offset) {
+      if (!el) return;
       if (!infoOverlay.hidden) closeInfo();
-      var about = document.getElementById('about-inline');
-      if (about) window.scrollTo({ top: about.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' });
+      function y() { return el.getBoundingClientRect().top + window.scrollY - (offset || 0); }
+      window.scrollTo({ top: y(), behavior: 'smooth' });
+      [1100, 2200].forEach(function (ms) {
+        setTimeout(function () { if (Math.abs(el.getBoundingClientRect().top - (offset || 0)) > 4) window.scrollTo({ top: y(), behavior: 'auto' }); }, ms);
+      });
     }
+    window.glideTo = glideTo;
+
+    // About / CV = the section at the very end of the page
+    function goAbout() { glideTo(document.getElementById('about-inline'), 0); }
+
+    // CV = right under About, at the end of the page
+    function goCV() { glideTo(document.querySelector('#about-inline .about-cv-page:not(:has(.cv-friends))'), 60); }
+    // Friends = right under the CV
+    function goFriends() { glideTo(document.querySelector('#about-inline .cv-friends'), 0); }
 
     // Works = the part of Home under the video: title, skill words and the pixel-circle pictures
-    function goWorks() {
-      if (!infoOverlay.hidden) closeInfo();
-      var area = document.querySelector('.poster-title');
-      if (area) window.scrollTo({ top: area.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
-    }
+    function goWorks() { glideTo(document.querySelector('.poster-title'), 20); }
 
     function goHome() {
       if (!infoOverlay.hidden) closeInfo();
@@ -3734,6 +3773,10 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       window.addEventListener('load', goWorks);
     } else if (hashKey === 'about') {
       window.addEventListener('load', goAbout);
+    } else if (hashKey === 'cv') {
+      window.addEventListener('load', goCV);
+    } else if (hashKey === 'friends') {
+      window.addEventListener('load', goFriends);
     }
   </script>
 
@@ -3883,7 +3926,7 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
       if (!a) return;
       e.preventDefault();
       history.replaceState(null, '', a.getAttribute('href'));
-      goTo(a.getAttribute('href').slice(1), true);
+      window.glideTo(document.getElementById(a.getAttribute('href').slice(1)), 20);
     });
     if (/^#work-\d+$/.test(location.hash)) window.addEventListener('load', function () { goTo(location.hash.slice(1), false); });
 

@@ -1700,6 +1700,15 @@ a[href], a[href] *, button, button * {
 .detail-menu .detail-menu-item:focus-visible {
   color: #000000 !important;
 }
+
+/* Menu: About and CV on the left, Home in the middle, Works on the right */
+.detail-menu .detail-menu-item:nth-child(3) { margin-left: clamp(1.5rem, 4vw, 3.5rem); margin-right: 0; }
+.detail-menu .detail-menu-item:nth-child(4) { margin-left: clamp(1.5rem, 4vw, 3.5rem); }
+.detail-menu .detail-menu-item:nth-child(5) { margin-left: auto; }
+@media (max-width: 600px) {
+  .detail-menu .detail-menu-item:nth-child(3) { margin-left: 0.8rem; order: 0; }
+  .detail-menu .detail-menu-item:nth-child(4) { order: 3; }
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1805,7 +1814,9 @@ a[href], a[href] *, button, button * {
     <header class="detail-header">
       <nav class="detail-menu" aria-label="Main navigation">
         <a class="detail-menu-item" href="home2.html">Home</a>
-      <a class="detail-menu-item" href="home2.html#about">About / CV</a>
+      <a class="detail-menu-item" href="home2.html#about">About</a>
+        <a class="detail-menu-item" href="home2.html#cv">CV</a>
+        <a class="detail-menu-item" href="home2.html#friends">Friends</a>
         <a class="detail-menu-item" href="home2.html#work">Works</a>
       </nav>
     </header>
