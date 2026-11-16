@@ -3730,7 +3730,7 @@ body.window-open .page-bg { visibility: hidden; }
       var W = document.documentElement.clientWidth, H = window.innerHeight, P, spots;
       // pictures start below the title
       var under = poster.querySelector('.poster-filters') || poster.querySelector('.poster-title');
-      var below = under ? under.offsetTop + under.offsetHeight + 30 : 80;
+      var below = under ? under.offsetTop + under.offsetHeight + 90 : 80; // room between the words and the pictures
       var shown = works.filter(function (w) { return filter === 'all' || w.tags.indexOf(filter) !== -1; });
       if (W >= 700) {
         P = Math.max(H * 1.5, W * 0.85);
