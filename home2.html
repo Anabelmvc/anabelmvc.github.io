@@ -299,6 +299,9 @@
     line-height: 1.65;
   }
 
+  .about-cv .cv-list + .cv-list { margin-top: 1.1rem; }
+  .about-cv .cv-sub { font-size: 0.82em; opacity: 0.6; letter-spacing: 0.02em; }
+
   .about-cv .cv-row {
     display: grid;
     grid-template-columns: 9.5rem minmax(0, 1fr);
@@ -2976,6 +2979,11 @@ body .menu-item, body .menu-item * {
         </div>
       </div>
 
+      <div class="feature-video transitions-video">
+        <video width="1280" height="720" data-src="web/mp4/MVI_5469.mp4" poster="web/posters/mvi-5469.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
+        <p class="video-credit">recorded by Ilva Nieuwstraten</p>
+      </div>
+
       <div class="transitions-quote">
         <p>When I emigrated, I left behind the body I had there. I left an identity that I will never get back, forgetting that part of me, what was mine and that I could never be again.</p>
         <p>“Identities that I don’t own but I was once.”</p>
@@ -3559,8 +3567,14 @@ body .menu-item, body .menu-item * {
       </div>
       <div class="cv-section">
         <h3>Software</h3>
-        <p class="cv-list">TouchDesigner. Ableton Live. Arduino IDE.<br>
-        Blender. Hydra. Krita.</p>
+        <p class="cv-list"><span class="cv-sub">Open source</span><br>
+        Blender. ArtCraft. GIMP. Krita.</p>
+        <p class="cv-list"><span class="cv-sub">Other favorite tools</span><br>
+        TouchDesigner. Unity. Ableton Live.<br>
+        Adobe InDesign. Arduino IDE.</p>
+        <p class="cv-list"><span class="cv-sub">Hardware</span><br>
+        Arduino (ESP32 family and sensors).<br>
+        Raspberry Pi and Pico.</p>
       </div>
       <div class="cv-section">
         <h3>Contact</h3>
