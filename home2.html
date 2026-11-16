@@ -1225,14 +1225,11 @@ a[href], a[href] *, button, button * {
   z-index: 1;
   /* behind the grid: the blue circuit picture, blurred and washed in its own blue */
   background-color: #2a14d8;
-  /* grid lines in a darker blue, on top of the picture */
-  background-image:
-    linear-gradient(to right, rgba(14, 6, 96, 0.6) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14, 6, 96, 0.6) 1px, transparent 1px),
-    url('web/images/home/home-background.webp');
-  background-size: 11px 11px, 11px 11px, cover;
-  background-position: 0 0, 0 0, center;
-  background-attachment: scroll, scroll, fixed;
+  /* the grid is drawn by a script on .poster-grid, so it can move with the cursor */
+  background-image: url('web/images/home/home-background.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   overflow: hidden;
 }
 .poster-item {
@@ -1248,7 +1245,8 @@ a[href], a[href] *, button, button * {
 }
 .poster-item img { object-fit: cover; transition: filter 0.3s ease; }
 /* the stepped shadow one cell down and right, like the extruded edges on the poster */
-.poster-item .poster-depth { background: rgba(12, 6, 70, 0.85); transform: translate(11px, 11px); }
+.poster-item .poster-depth { display: none; } /* no stepped shadow: the background shows around the circles */
+.poster-grid { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
 .poster-item:hover img { filter: brightness(1.12); }
 .poster-label {
   position: absolute;
@@ -1751,7 +1749,7 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
         spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: 90 + r + i * r * 1.55, r: r }; });
         P = spots[spots.length - 1].cy + r + 120;
       }
-      poster.innerHTML = '';
+      poster.querySelectorAll('.poster-item, .poster-label').forEach(function (el) { el.remove(); });
       var bottom = 0;
       works.forEach(function (w, i) {
         var s = spots[i % spots.length];
@@ -1797,6 +1795,89 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
     function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open')); }
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     sync();
+  })();
+</script>
+<script>
+  /* Living grid on the Home poster: squares near the cursor are pushed along with its movement,
+     then spring back to their places. Touch screens and "reduce motion" get a still grid. */
+  (function () {
+    var poster = document.getElementById('home-poster');
+    if (!poster) return;
+    var C = 11, R = 130, LINE = 'rgba(14, 6, 96, 0.6)';
+    var canvas = document.createElement('canvas');
+    canvas.className = 'poster-grid';
+    canvas.setAttribute('aria-hidden', 'true');
+    poster.insertBefore(canvas, poster.firstChild);
+    var ctx = canvas.getContext('2d');
+    var dpr = 1, W = 0, H = 0, raf = 0, lastX = null, lastY = null;
+    var moved = new Map(); // cell key -> { x, y, vx, vy }
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      draw();
+    }
+    function draw() {
+      var sy = window.scrollY;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.beginPath();
+      var j0 = Math.floor(sy / C) - 1, j1 = Math.ceil((sy + H) / C) + 1, i1 = Math.ceil(W / C) + 1;
+      for (var j = j0; j <= j1; j++) {
+        for (var i = -1; i <= i1; i++) {
+          var x = i * C + 0.5, y = j * C - sy + 0.5, m = moved.get(j * 100000 + i);
+          if (m) {
+            // a moved square is drawn whole at its new place
+            ctx.rect(x + m.x, y + m.y, C, C);
+          } else {
+            ctx.moveTo(x, y + C); ctx.lineTo(x, y); ctx.lineTo(x + C, y);
+          }
+        }
+      }
+      ctx.strokeStyle = LINE;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    function tick() {
+      moved.forEach(function (m, k) {
+        m.vx += -m.x * 0.07; m.vy += -m.y * 0.07;   // pull back home
+        m.vx *= 0.86; m.vy *= 0.86;                 // calm down
+        m.x += m.vx; m.y += m.vy;
+        if (Math.abs(m.x) < 0.05 && Math.abs(m.y) < 0.05 && Math.abs(m.vx) < 0.05 && Math.abs(m.vy) < 0.05) moved.delete(k);
+      });
+      draw();
+      canvas.dataset.moving = moved.size;
+      raf = moved.size ? requestAnimationFrame(tick) : 0;
+    }
+    function push(e) {
+      if (still || e.pointerType === 'touch' || document.body.classList.contains('window-open')) return;
+      var px = e.clientX, py = e.clientY + window.scrollY;
+      var dx = lastX === null ? 0 : px - lastX, dy = lastY === null ? 0 : py - lastY;
+      lastX = px; lastY = py;
+      if (!dx && !dy) return;
+      var ci = Math.floor(px / C), cj = Math.floor(py / C), n = Math.ceil(R / C);
+      for (var j = cj - n; j <= cj + n; j++) {
+        for (var i = ci - n; i <= ci + n; i++) {
+          var cx = i * C + C / 2, cy = j * C + C / 2, d = Math.hypot(cx - px, cy - py);
+          if (d > R) continue;
+          var w = (1 - d / R) * (1 - d / R), k = j * 100000 + i;
+          var m = moved.get(k) || { x: 0, y: 0, vx: 0, vy: 0 };
+          // carried along with the cursor, and nudged a little away from it
+          m.vx += dx * 0.22 * w + ((cx - px) / (d || 1)) * 1.2 * w;
+          m.vy += dy * 0.22 * w + ((cy - py) / (d || 1)) * 1.2 * w;
+          moved.set(k, m);
+        }
+      }
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+    window.addEventListener('pointermove', push, { passive: true });
+    window.addEventListener('pointerleave', function () { lastX = lastY = null; });
+    window.addEventListener('scroll', function () { lastX = lastY = null; if (!raf) draw(); }, { passive: true });
+    window.addEventListener('resize', resize);
+    resize();
   })();
 </script>
 <script src="cat.js"></script>
