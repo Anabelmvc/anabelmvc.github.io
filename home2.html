@@ -2898,6 +2898,12 @@ body .menu-item, body .menu-item * {
 }
 .about-cv .cv-friends .cv-friends-list a:hover,
 .about-cv .cv-friends .cv-friends-list a:focus-visible { color: #54797f !important; }
+/* Friend cards: a photo with the name underneath, the whole card is the link */
+.about-cv .cv-friends .cv-friends-list { display: flex; flex-wrap: wrap; gap: clamp(1rem, 2vw, 2rem); margin-top: 1.5rem; }
+.about-cv .cv-friends .friend-card a { display: flex; flex-direction: column; gap: 0.6rem; text-decoration: none; }
+.about-cv .cv-friends .friend-card img { display: block; width: clamp(11rem, 18vw, 17rem); height: auto; aspect-ratio: 775 / 514; object-fit: cover; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45); transition: filter 0.25s ease; }
+.about-cv .cv-friends .friend-card span { text-decoration: underline; text-underline-offset: 3px; }
+.about-cv .cv-friends .friend-card a:hover img { filter: brightness(1.08) saturate(1.1); }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap">
@@ -3693,7 +3699,7 @@ body .menu-item, body .menu-item * {
         <div class="cv-section cv-friends">
           <h3>Friends</h3>
           <ul class="cv-list cv-friends-list">
-            <li><a href="https://tluisman.nl/index.html" target="_blank" rel="noopener noreferrer">Tijmen Luisman</a></li>
+            <li class="friend-card"><a href="https://tluisman.nl/index.html" target="_blank" rel="noopener noreferrer"><img src="web/images/friends/tijmen-luisman.webp" alt="Tijmen Luisman" width="775" height="514" loading="lazy"><span>Tijmen Luisman</span></a></li>
           </ul>
           <p class="cv-friends-credit">VR chat picture</p>
         </div>
