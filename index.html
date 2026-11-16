@@ -3,7 +3,9 @@
 <head>
 <script>
   /* One way in: the address without a project goes straight to Home */
-  if (!/^#project-\d+$/.test(location.hash)) location.replace('home2.html');
+  // every address now goes to Home; a project link lands on that work inside Home
+  var m = location.hash.match(/^#project-(\d+)$/);
+  location.replace('home2.html' + (m ? '#work-' + m[1] : ''));
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
