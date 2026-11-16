@@ -1675,6 +1675,18 @@ a[href], a[href] *, button, button * {
   .project-arrow--prev { left: var(--edge); }
   .project-arrow--next { left: auto; right: var(--edge); }
 }
+
+/* Smaller menu bar, same as Home */
+.detail-header {
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+}
+.detail-menu-item {
+  font-size: 1rem !important;
+}
+@media (max-width: 600px) {
+  .detail-menu-item { font-size: 0.85rem !important; }
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

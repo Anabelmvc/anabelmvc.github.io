@@ -1214,8 +1214,8 @@ a[href], a[href] *, button, button * {
 }
 
 
-/* Home poster: blue circuit background with a grid, pixel-circle covers, black and white labels.
-   One grid cell = 11px; everything is placed on whole cells. */
+/* Home poster: blue circuit background, pixel-circle covers, black and white labels.
+   The circles are built from 11px steps. */
 #home-poster {
   position: absolute;
   top: 0;
@@ -1225,13 +1225,10 @@ a[href], a[href] *, button, button * {
   z-index: 1;
   /* behind the grid: the blue circuit picture, blurred and washed in its own blue */
   background-color: #2a14d8;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
-    url('web/images/home/home-background.webp');
-  background-size: 11px 11px, 11px 11px, cover;
-  background-position: 0 0, 0 0, center;
-  background-attachment: scroll, scroll, fixed;
+  background-image: url('web/images/home/home-background.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   overflow: hidden;
 }
 .poster-item {
@@ -1269,6 +1266,18 @@ a[href], a[href] *, button, button * {
 body:not(.window-open) .site-header { background: none !important; }
 body:not(.window-open) .menu-item { color: #ffffff; }
 body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
+
+/* Smaller menu bar, like the small bold menu on the RA pages */
+.site-header {
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+}
+.menu-item {
+  font-size: 1rem !important;
+}
+@media (max-width: 600px) {
+  .menu-item { font-size: 0.85rem !important; }
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1732,10 +1741,10 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
         spots = WIDE.map(function (s) { return { cx: s[0] * W, cy: s[1] * P, r: s[2] * W }; });
         // move everything up or down so the highest picture starts just under the menu
         var top = Math.min.apply(null, spots.map(function (s) { return s.cy - s.r; }));
-        spots.forEach(function (s) { s.cy += 120 - top; });
+        spots.forEach(function (s) { s.cy += 80 - top; });
       } else {
         var r = W * 0.3;
-        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: 150 + r + i * r * 1.55, r: r }; });
+        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: 90 + r + i * r * 1.55, r: r }; });
         P = spots[spots.length - 1].cy + r + 120;
       }
       poster.innerHTML = '';
