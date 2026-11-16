@@ -2843,6 +2843,22 @@ body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !impor
   font-weight: 400 !important;
 }
 #works-flow video { height: auto; }
+
+/* A soft pink line between works, blurred at the edges like a glow */
+#works-flow .text-block.active { position: relative; }
+#works-flow .text-block.active + .text-block.active::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * clamp(3.5rem, 7vh, 4.25rem));
+  left: 50%;
+  width: 96vw;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(255, 150, 200, 0.32);
+  filter: blur(5px);
+  pointer-events: none;
+}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 </head>
