@@ -1215,7 +1215,7 @@ a[href], a[href] *, button, button * {
 
 
 /* Home poster: blue circuit background with a grid, pixel-circle covers, black and white labels.
-   One grid cell = 22px; everything is placed on whole cells. */
+   One grid cell = 11px; everything is placed on whole cells. */
 #home-poster {
   position: absolute;
   top: 0;
@@ -1229,7 +1229,7 @@ a[href], a[href] *, button, button * {
     linear-gradient(to right, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
     url('web/images/home/home-background.webp');
-  background-size: 22px 22px, 22px 22px, cover;
+  background-size: 11px 11px, 11px 11px, cover;
   background-position: 0 0, 0 0, center;
   background-attachment: scroll, scroll, fixed;
   overflow: hidden;
@@ -1247,7 +1247,7 @@ a[href], a[href] *, button, button * {
 }
 .poster-item img { object-fit: cover; transition: filter 0.3s ease; }
 /* the stepped shadow one cell down and right, like the extruded edges on the poster */
-.poster-item .poster-depth { background: rgba(12, 6, 70, 0.85); transform: translate(22px, 22px); }
+.poster-item .poster-depth { background: rgba(12, 6, 70, 0.85); transform: translate(11px, 11px); }
 .poster-item:hover img { filter: brightness(1.12); }
 .poster-label {
   position: absolute;
@@ -1704,7 +1704,7 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
     var poster = document.getElementById('home-poster');
     var tpl = document.getElementById('tpl-work');
     if (!poster || !tpl) return;
-    var C = 22; // grid cell
+    var C = 11; // grid cell
     var works = [].map.call(tpl.content.querySelectorAll('.work-row'), function (a) {
       var img = a.querySelector('img');
       return { href: a.getAttribute('href'), title: a.querySelector('h3').textContent.trim(), src: img.getAttribute('src'), alt: img.getAttribute('alt') || '' };
