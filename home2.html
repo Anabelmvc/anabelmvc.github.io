@@ -1224,16 +1224,8 @@ a[href], a[href] *, button, button * {
   min-height: 100vh;
   z-index: 1;
   /* behind the grid: the blue circuit picture, blurred and washed in its own blue */
-  /* a fine grid, 4px squares like the screen over the video, on the circuit picture, sharp but very dimmed */
-  background-color: #000000;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
-    url('web/images/home/home-background-sharp.webp');
-  background-size: 4px 4px, 4px 4px, cover, cover;
-  background-position: 0 0, 0 0, center, center;
-  background-attachment: scroll, scroll, fixed, fixed;
+  /* the background is one still layer behind the page (.page-bg), so scrolling stays smooth */
+  background: none;
   overflow: hidden;
 }
 .poster-item {
@@ -2744,22 +2736,14 @@ body.window-open .menu-item:focus-visible {
   padding: 2rem 0 6rem;
   color: #ffffff;
 }
-/* the works share the Home background: fine grid over the very dimmed circuit picture */
+/* the works sit on the same still background layer (.page-bg) */
 #works-flow,
 html #works-flow {
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
   overflow: visible !important;
-  background-color: #000000 !important;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
-    url('web/images/home/home-background-sharp.webp') !important;
-  background-size: 4px 4px, 4px 4px, cover, cover !important;
-  background-position: 0 0, 0 0, center, center !important;
-  background-attachment: scroll, scroll, fixed, fixed !important;
+  background: none !important;
 }
 /* white text on the dark works; small details in soft white */
 #works-flow :is(h1, h2, h3, h4, p, li, span, a, figcaption, small, strong, em, blockquote, div) { color: inherit !important; }
@@ -2768,11 +2752,31 @@ html #works-flow {
 /* over the works the glow rests */
 body.on-light .poster-mist { display: none; }
 
+
+/* One still background for Home and the works: fine 4px grid over the very dimmed circuit picture.
+   It never moves, so the browser doesn't repaint it while scrolling (that caused flicker). */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #000000;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
+    url('web/images/home/home-background-sharp.webp');
+  background-size: 4px 4px, 4px 4px, cover, cover;
+  background-position: 0 0, 0 0, center, center;
+  transform: translateZ(0);
+}
+body.window-open .page-bg { visibility: hidden; }
 </style>
 </head>
 <body>
 
 
+  <div class="page-bg" aria-hidden="true"></div>
   <!-- Home: cover pictures cut into pixel circles on a black grid, each with its title label -->
   <div id="home-poster" aria-label="Works">
     <div class="poster-mist" aria-hidden="true"></div>
