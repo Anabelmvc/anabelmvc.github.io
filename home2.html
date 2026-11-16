@@ -1798,20 +1798,24 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
   })();
 </script>
 <script>
-  /* Living grid on the Home poster: squares near the cursor are pushed along with its movement,
-     then spring back to their places. Touch screens and "reduce motion" get a still grid. */
+  /* Living grid on the Home poster: around the cursor the grid sinks in stepped rings, like the
+     extruded grid on the KABK flyer, with diagonal walls between the levels. It flattens back when
+     the cursor leaves. Touch screens and "reduce motion" get a still grid. */
   (function () {
     var poster = document.getElementById('home-poster');
     if (!poster) return;
-    var C = 11, R = 130, LINE = 'rgba(255, 255, 255, 0.45)';
+    var C = 11, R = 150, LEVELS = 3, STEP = 10, LINE = 'rgba(255, 255, 255, 0.45)';
+    var DIR_X = -0.55, DIR_Y = 1;              // which way the steps go: down and a little left
     var canvas = document.createElement('canvas');
     canvas.className = 'poster-grid';
     canvas.setAttribute('aria-hidden', 'true');
     poster.insertBefore(canvas, poster.firstChild);
     var ctx = canvas.getContext('2d');
-    var dpr = 1, W = 0, H = 0, raf = 0, lastX = null, lastY = null;
-    var moved = new Map(); // cell key -> { x, y, vx, vy }
+    var dpr = 1, W = 0, H = 0, raf = 0, cursor = null;
+    var cells = new Map(); // cell key -> { d: current depth, t: target depth }
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function key(i, j) { return j * 100000 + i; }
+    function depth(i, j) { var c = cells.get(key(i, j)); return c ? c.d : 0; }
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1828,54 +1832,64 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
       var j0 = Math.floor(sy / C) - 1, j1 = Math.ceil((sy + H) / C) + 1, i1 = Math.ceil(W / C) + 1;
       for (var j = j0; j <= j1; j++) {
         for (var i = -1; i <= i1; i++) {
-          var x = i * C + 0.5, y = j * C - sy + 0.5, m = moved.get(j * 100000 + i);
-          if (m) {
-            // a moved square is drawn whole at its new place
-            ctx.rect(x + m.x, y + m.y, C, C);
-          } else {
-            ctx.moveTo(x, y + C); ctx.lineTo(x, y); ctx.lineTo(x + C, y);
+          var x = i * C + 0.5, y = j * C - sy + 0.5, d = depth(i, j);
+          var ox = d * DIR_X, oy = d * DIR_Y;
+          // top and left edge of the cell, moved by its depth
+          ctx.moveTo(x + ox, y + C + oy); ctx.lineTo(x + ox, y + oy); ctx.lineTo(x + C + ox, y + oy);
+          if (!d) continue;
+          // walls: where this cell sits deeper than its neighbour, join the two levels
+          var dl = depth(i - 1, j), du = depth(i, j - 1);
+          if (Math.abs(d - dl) > 0.5) {
+            ctx.moveTo(x + dl * DIR_X, y + dl * DIR_Y); ctx.lineTo(x + ox, y + oy);
+            ctx.moveTo(x + dl * DIR_X, y + C + dl * DIR_Y); ctx.lineTo(x + ox, y + C + oy);
           }
+          if (Math.abs(d - du) > 0.5) {
+            ctx.moveTo(x + C + du * DIR_X, y + du * DIR_Y); ctx.lineTo(x + C + ox, y + oy);
+          }
+          // close the right and bottom edges where the neighbour is at another level
+          if (Math.abs(d - depth(i + 1, j)) > 0.5) { ctx.moveTo(x + C + ox, y + oy); ctx.lineTo(x + C + ox, y + C + oy); }
+          if (Math.abs(d - depth(i, j + 1)) > 0.5) { ctx.moveTo(x + ox, y + C + oy); ctx.lineTo(x + C + ox, y + C + oy); }
         }
       }
       ctx.strokeStyle = LINE;
       ctx.lineWidth = 1;
       ctx.stroke();
     }
-    function tick() {
-      moved.forEach(function (m, k) {
-        m.vx += -m.x * 0.07; m.vy += -m.y * 0.07;   // pull back home
-        m.vx *= 0.86; m.vy *= 0.86;                 // calm down
-        m.x += m.vx; m.y += m.vy;
-        if (Math.abs(m.x) < 0.05 && Math.abs(m.y) < 0.05 && Math.abs(m.vx) < 0.05 && Math.abs(m.vy) < 0.05) moved.delete(k);
-      });
-      draw();
-      canvas.dataset.moving = moved.size;
-      raf = moved.size ? requestAnimationFrame(tick) : 0;
-    }
-    function push(e) {
-      if (still || e.pointerType === 'touch' || document.body.classList.contains('window-open')) return;
-      var px = e.clientX, py = e.clientY + window.scrollY;
-      var dx = lastX === null ? 0 : px - lastX, dy = lastY === null ? 0 : py - lastY;
-      lastX = px; lastY = py;
-      if (!dx && !dy) return;
-      var ci = Math.floor(px / C), cj = Math.floor(py / C), n = Math.ceil(R / C);
+    function aim() {
+      // every cell near the cursor gets a stepped target depth; everything else goes back to 0
+      cells.forEach(function (c) { c.t = 0; });
+      if (!cursor) return;
+      var ci = Math.floor(cursor.x / C), cj = Math.floor(cursor.y / C), n = Math.ceil(R / C);
       for (var j = cj - n; j <= cj + n; j++) {
         for (var i = ci - n; i <= ci + n; i++) {
-          var cx = i * C + C / 2, cy = j * C + C / 2, d = Math.hypot(cx - px, cy - py);
-          if (d > R) continue;
-          var w = (1 - d / R) * (1 - d / R), k = j * 100000 + i;
-          var m = moved.get(k) || { x: 0, y: 0, vx: 0, vy: 0 };
-          // carried along with the cursor, and nudged a little away from it
-          m.vx += dx * 0.22 * w + ((cx - px) / (d || 1)) * 1.2 * w;
-          m.vy += dy * 0.22 * w + ((cy - py) / (d || 1)) * 1.2 * w;
-          moved.set(k, m);
+          var dist = Math.hypot(i * C + C / 2 - cursor.x, j * C + C / 2 - cursor.y);
+          if (dist >= R) continue;
+          var level = Math.ceil((1 - dist / R) * LEVELS);
+          var k = key(i, j), c = cells.get(k) || { d: 0, t: 0 };
+          c.t = level * STEP;
+          cells.set(k, c);
         }
       }
-      if (!raf) raf = requestAnimationFrame(tick);
     }
-    window.addEventListener('pointermove', push, { passive: true });
-    window.addEventListener('pointerleave', function () { lastX = lastY = null; });
-    window.addEventListener('scroll', function () { lastX = lastY = null; if (!raf) draw(); }, { passive: true });
+    function tick() {
+      aim();
+      cells.forEach(function (c, k) {
+        c.d += (c.t - c.d) * 0.2;
+        if (!c.t && c.d < 0.1) cells.delete(k);
+      });
+      draw();
+      canvas.dataset.moving = cells.size;
+      raf = cells.size ? requestAnimationFrame(tick) : 0;
+    }
+    function start() { if (!raf) raf = requestAnimationFrame(tick); }
+    window.addEventListener('pointermove', function (e) {
+      if (still || e.pointerType === 'touch' || document.body.classList.contains('window-open')) { cursor = null; return; }
+      cursor = { x: e.clientX, y: e.clientY + window.scrollY };
+      start();
+    }, { passive: true });
+    document.addEventListener('pointerleave', function () { cursor = null; start(); });
+    window.addEventListener('blur', function () { cursor = null; start(); });
+    window.addEventListener('scroll', function () { cursor = null; start(); if (!raf) draw(); }, { passive: true });
     window.addEventListener('resize', resize);
     resize();
   })();
