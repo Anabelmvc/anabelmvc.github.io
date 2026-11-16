@@ -2800,9 +2800,16 @@ body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', 
   background: none !important;
 }
 #about-inline .info-window { transform: none !important; opacity: 1 !important; }
-/* over About the menu gets its white bar and black words, as before */
-body.in-about .site-header { background: #ffffff !important; }
-body.in-about .menu-item, body.in-about .menu-item:hover { color: #000000 !important; }
+/* About and CV sit on the same dark grid background as the works, with white text */
+#about-inline .info-window,
+#about-inline .info-window--about,
+#about-inline .about-cv-page,
+#about-inline .about-cv-page:not(:has(.cv-friends)) > .about-cv { background: none !important; background-color: transparent !important; }
+#about-inline .about-cv-page:not(:has(.cv-friends)) :is(h3, p, li, span, small, strong, div, a) { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.65); }
+#about-inline .about-cv-page:not(:has(.cv-friends)) :is(.cv-date, small) { color: rgba(255, 255, 255, 0.75) !important; }
+/* menu buttons: no box after clicking */
+.menu-item:focus { outline: none; }
+.menu-item:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.6); outline-offset: 4px; }
 
 /* Every description text in the works is one size, the same as the essay text */
 #works-flow :is(.transitions-copy, .transitions-meta, .transitions-essay, .transitions-summary, .transitions-split-text,
@@ -3931,7 +3938,7 @@ body .menu-item, body .menu-item * {
 
   // The cat turns white on the black poster
   (function () {
-    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open') && !document.body.classList.contains('in-about')); }
+    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open')); }
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     sync();
   })();
