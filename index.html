@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>
+  /* One way in: the address without a project goes straight to Home */
+  if (!/^#project-\d+$/.test(location.hash)) location.replace('home2.html');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Anabel Miryana</title>
