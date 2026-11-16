@@ -2742,15 +2742,32 @@ body.window-open .menu-item:focus-visible {
   width: 100%;
   z-index: 1;
   padding: 2rem 0 6rem;
-  background: #ffffff;
-  color: #000000;
+  color: #ffffff;
 }
+/* the works share the Home background: fine grid over the very dimmed circuit picture */
+#works-flow,
+html #works-flow {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background-color: #000000 !important;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)),
+    url('web/images/home/home-background-sharp.webp') !important;
+  background-size: 4px 4px, 4px 4px, cover, cover !important;
+  background-position: 0 0, 0 0, center, center !important;
+  background-attachment: scroll, scroll, fixed, fixed !important;
+}
+/* white text on the dark works; small details in soft white */
+#works-flow :is(h1, h2, h3, h4, p, li, span, a, figcaption, small, strong, em, blockquote, div) { color: inherit !important; }
+#works-flow :is(.transitions-meta, .transitions-meta p, .video-credit, figcaption, .blue-title-kicker, .project-credits, .project-credits p) { color: rgba(255, 255, 255, 0.72) !important; }
 #works-flow .text-block.active { scroll-margin-top: 20px; }
-/* over the white works: the glow rests, and the menu gets a white bar with black words */
+/* over the works the glow rests */
 body.on-light .poster-mist { display: none; }
-body.on-light:not(.window-open) .site-header { background: #ffffff !important; }
-body.on-light:not(.window-open) .menu-item,
-body.on-light:not(.window-open) .menu-item:hover { color: #000000 !important; }
+
 </style>
 </head>
 <body>
@@ -3782,7 +3799,7 @@ body.on-light:not(.window-open) .menu-item:hover { color: #000000 !important; }
 
   // The cat turns white on the black poster
   (function () {
-    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open') && !document.body.classList.contains('on-light')); }
+    function sync() { document.body.classList.toggle('poster-on', !document.body.classList.contains('window-open')); }
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     sync();
   })();
