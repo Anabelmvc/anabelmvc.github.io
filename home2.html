@@ -1363,17 +1363,14 @@ body:not(.window-open) .menu-item:hover { color: #ff5fa2; }
 .poster-title { padding-top: clamp(2.5rem, 7vh, 4.5rem); }
 
 
-/* Menu hover: no colour change, the word just shines a little */
-.menu-item { transition: text-shadow 0.3s ease !important; }
+/* Menu hover: nothing changes (no colour, no glow) */
 body:not(.window-open) .menu-item:hover,
 body:not(.window-open) .menu-item:focus-visible {
   color: #ffffff !important;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.85), 0 0 16px rgba(255, 255, 255, 0.45) !important;
 }
 body.window-open .menu-item:hover,
 body.window-open .menu-item:focus-visible {
   color: #000000 !important;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.3), 0 0 14px rgba(0, 0, 0, 0.15) !important;
 }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1986,11 +1983,7 @@ body.window-open .menu-item:focus-visible {
       raf = cells.size ? requestAnimationFrame(tick) : 0;
     }
     function start() { if (!raf) raf = requestAnimationFrame(tick); }
-    window.addEventListener('pointermove', function (e) {
-      if (still || e.pointerType === 'touch' || document.body.classList.contains('window-open')) { cursor = null; return; }
-      cursor = { x: e.clientX, y: e.clientY + window.scrollY };
-      start();
-    }, { passive: true });
+    // the grid used to sink around the cursor; removed for now, so it stays still
     document.addEventListener('pointerleave', function () { cursor = null; start(); });
     window.addEventListener('blur', function () { cursor = null; start(); });
     window.addEventListener('scroll', function () { cursor = null; start(); if (!raf) draw(); }, { passive: true });
