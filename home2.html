@@ -1376,6 +1376,29 @@ body.window-open .menu-item:hover,
 body.window-open .menu-item:focus-visible {
   color: #000000 !important;
 }
+
+/* Skill labels on Home, under the title: white, the chosen one in pink */
+.poster-filters {
+  position: relative;
+  z-index: 25;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 2rem;
+  margin: clamp(1.5rem, 4vh, 2.5rem) 0 0;
+  padding: 0 var(--edge);
+}
+.poster-filters button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: clamp(1rem, 1.25vw, 1.3rem);
+  color: #ffffff;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.poster-filters button:hover,
+.poster-filters button[aria-pressed="true"] { color: #ff5fa2; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1390,6 +1413,8 @@ body.window-open .menu-item:focus-visible {
       <video src="mp4/VIDEO%20LOOP%20web.mp4" poster="web/posters/video-loop-web.webp" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback></video>
     </div>
     <h1 class="poster-title">Anabel Miryana<br>Interactive artist and designer</h1>
+    <!-- filled by the poster script with the same labels as the Works page -->
+    <div class="poster-filters" role="group" aria-label="Show works by skill"></div>
   </div>
 
   <header class="site-header">
@@ -1820,7 +1845,7 @@ body.window-open .menu-item:focus-visible {
     var C = 11; // grid cell
     var works = [].map.call(tpl.content.querySelectorAll('.work-row'), function (a) {
       var img = a.querySelector('img');
-      return { href: a.getAttribute('href'), title: a.querySelector('h3').textContent.trim(), src: img.getAttribute('src'), alt: img.getAttribute('alt') || '' };
+      return { href: a.getAttribute('href'), title: a.querySelector('h3').textContent.trim(), src: img.getAttribute('src'), alt: img.getAttribute('alt') || '', tags: (a.dataset.tags || '').split(' ') };
     });
     // where each circle goes on a wide screen: centre x, centre y (share of width / height), radius (share of width)
     var WIDE = [
@@ -1838,11 +1863,13 @@ body.window-open .menu-item:focus-visible {
       return "path('" + d + "')";
     }
     function snap(v) { return Math.round(v / C) * C; }
+    var filter = 'all';
     function build() {
       var W = document.documentElement.clientWidth, H = window.innerHeight, P, spots;
       // pictures start below the title
-      var title = poster.querySelector('.poster-title');
-      var below = title ? title.offsetTop + title.offsetHeight + 30 : 80;
+      var under = poster.querySelector('.poster-filters') || poster.querySelector('.poster-title');
+      var below = under ? under.offsetTop + under.offsetHeight + 30 : 80;
+      var shown = works.filter(function (w) { return filter === 'all' || w.tags.indexOf(filter) !== -1; });
       if (W >= 700) {
         P = Math.max(H * 1.5, W * 0.85);
         spots = WIDE.map(function (s) { return { cx: s[0] * W, cy: s[1] * P, r: s[2] * W }; });
@@ -1851,12 +1878,12 @@ body.window-open .menu-item:focus-visible {
         spots.forEach(function (s) { s.cy += below - top; });
       } else {
         var r = W * 0.3;
-        spots = works.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: below + r + i * r * 1.55, r: r }; });
+        spots = shown.map(function (w, i) { return { cx: W * (i % 2 ? 0.64 : 0.36), cy: below + r + i * r * 1.55, r: r }; });
         P = spots[spots.length - 1].cy + r + 120;
       }
       poster.querySelectorAll('.poster-item, .poster-label').forEach(function (el) { el.remove(); });
       var bottom = 0;
-      works.forEach(function (w, i) {
+      shown.forEach(function (w, i) {
         var s = spots[i % spots.length];
         var n = Math.max(6, Math.round((s.r * 2) / C));
         var x = snap(s.cx - (n * C) / 2), y = snap(s.cy - (n * C) / 2), size = n * C;
@@ -1889,6 +1916,21 @@ body.window-open .menu-item:focus-visible {
       });
       // the poster ends a few cells below the lowest picture
       poster.style.height = Math.max(snap(H), snap(bottom + C * 3)) + 'px';
+    }
+    // the skill labels, copied from the Works page so both stay the same
+    var bar = poster.querySelector('.poster-filters');
+    if (bar) {
+      tpl.content.querySelectorAll('.work-labels button').forEach(function (b) {
+        var c = b.cloneNode(true);
+        bar.appendChild(c);
+      });
+      bar.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-filter]');
+        if (!b) return;
+        filter = b.getAttribute('aria-pressed') === 'true' && b.dataset.filter !== 'all' ? 'all' : b.dataset.filter;
+        bar.querySelectorAll('[data-filter]').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.filter === filter ? 'true' : 'false'); });
+        build();
+      });
     }
     build();
     var t;
