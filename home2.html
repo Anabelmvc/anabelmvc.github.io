@@ -901,7 +901,7 @@
 
   /* Same font for everything (matches the project pages) */
   body, body * {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-family: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   }
 
 
@@ -2455,7 +2455,7 @@ body.window-open .menu-item:focus-visible {
   gap: 1rem;
 }
 #works-flow, #works-flow *{
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-family: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 #works-flow .blue-title-block{
   display: flex;
@@ -2770,7 +2770,19 @@ html #works-flow {
   transform: translateZ(0);
 }
 body.window-open .page-bg { visibility: hidden; }
+
+/* One font everywhere: Instrument Sans */
+body, body *, button, input { font-family: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important; }
+
+/* Easier to read on the dark background: brighter details and a quiet dark shadow behind the letters */
+#works-flow :is(.transitions-meta, .transitions-meta p, .video-credit, figcaption, .blue-title-kicker, .project-credits, .project-credits p) { color: rgba(255, 255, 255, 0.88) !important; }
+#works-flow :is(h1, h2, h3, h4, p, li, span, a, figcaption, small, strong, em, blockquote),
+.poster-title, .poster-filters button {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.65);
+}
+#works-flow p { line-height: 1.6; }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 </head>
 <body>
 
