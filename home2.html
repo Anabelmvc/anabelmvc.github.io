@@ -1405,6 +1405,56 @@ body.window-open .menu-item:focus-visible {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style id="works-flow-css">
+/* Photo carousels: three photos at a time, moving on by themselves; arrows to go back and forth */
+#works-flow .carousel-wrap {
+  position: relative;
+  width: min(100%, var(--content));
+  margin: 0 auto clamp(3rem, 8vh, 5rem);
+}
+#works-flow .carousel-wrap > .transitions-gallery.photo-carousel {
+  --gap: clamp(1rem, 2vw, 2rem);
+  display: grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 2 * var(--gap)) / 3);
+  gap: var(--gap);
+  align-items: start;
+  width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+#works-flow .photo-carousel::-webkit-scrollbar { display: none; }
+#works-flow .photo-carousel > .transitions-image { scroll-snap-align: start; }
+#works-flow .carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: -1.375rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #000000;
+  font: 1.4rem/1 Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+#works-flow .carousel-arrow--prev { left: 0.75rem; }
+#works-flow .carousel-arrow--next { right: 0.75rem; }
+#works-flow .carousel-arrow:hover,
+#works-flow .carousel-arrow:focus-visible { background: #ffffff; }
+@media (max-width: 900px) {
+  #works-flow .carousel-wrap > .transitions-gallery.photo-carousel { grid-auto-columns: 85%; }
+}
+
+/* Works hidden by the skill buttons on the main screen */
+#works-flow .text-block.filtered-out { display: none !important; }
+
 /* Project pages, copied from index.html and scoped to #works-flow */
 @font-face{
   font-family: 'terminal-grotesque';
@@ -2916,7 +2966,7 @@ body .menu-item, body .menu-item * {
   <div id="home-poster" aria-label="Works">
     <div class="poster-mist" aria-hidden="true"></div>
     <div class="poster-video">
-      <video src="mp4/VIDEO%20LOOP%20web.mp4" poster="web/posters/video-loop-web.webp" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback></video>
+      <video id="main-loop" src="mp4/VIDEO%20LOOP%20web.mp4" poster="web/posters/video-loop-web.webp" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback></video>
     </div>
     <h1 class="poster-title">Anabel Miryana<br>Interactive artist and designer</h1>
     <!-- filled by the poster script with the same labels as the Works page -->
@@ -2990,11 +3040,6 @@ body .menu-item, body .menu-item * {
             <p>Keywords: cultural traditions, interactive wearable</p>
           </div>
         </div>
-      </div>
-
-      <div class="feature-video transitions-video">
-        <video width="1280" height="720" data-src="web/mp4/MVI_5469.mp4" poster="web/posters/mvi-5469.webp" preload="none" muted loop playsinline controls controlslist="nodownload" disablepictureinpicture disableremoteplayback></video>
-        <p class="video-credit">recorded by Ilva Nieuwstraten</p>
       </div>
 
       <div class="transitions-quote">
@@ -3488,7 +3533,7 @@ body .menu-item, body .menu-item * {
         </div>
         <img src="web/images/ecosenda/IMG_20250409_144947_00_027.webp" alt="Ecosenda">
       </a>
-      <a class="work-row" href="index.html#project-8" data-tags="performance">
+      <a class="work-row" href="index.html#project-8" data-tags="performance electronics">
         <div class="work-row-text">
           <h3>Cyberfeminism</h3>
           <p class="work-row-sub">Performance, 2025</p>
@@ -3512,7 +3557,7 @@ body .menu-item, body .menu-item * {
         </div>
         <img src="web/images/baby%20precolombino/Screenshot_20261019_002550.webp" alt="Baby precolombino">
       </a>
-      <a class="work-row" href="index.html#project-12" data-tags="performance electronics creative-coding">
+      <a class="work-row" href="index.html#project-12" data-tags="performance electronics">
         <div class="work-row-text">
           <h3>Sensing bodies</h3>
           <p class="work-row-sub">Video performance, 2024</p>
@@ -3905,6 +3950,19 @@ body .menu-item, body .menu-item * {
   </script>
 
 <script>
+  /* Main looping video: start it the moment the page opens, without waiting for a click */
+  (function () {
+    var v = document.getElementById('main-loop');
+    if (!v) return;
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+    function go() { if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
+    go();
+    ['loadedmetadata', 'loadeddata', 'canplay'].forEach(function (t) { v.addEventListener(t, go); });
+    document.addEventListener('DOMContentLoaded', go);
+    window.addEventListener('pageshow', go);
+  })();
+</script>
+<script>
   /* Videos have no controls, so make sure they start: try now, and again on the first click, key, touch or scroll
      (some browsers block autoplay until the visitor interacts with the page) */
   (function () {
@@ -3960,6 +4018,11 @@ body .menu-item, body .menu-item * {
       var under = poster.querySelector('.poster-filters') || poster.querySelector('.poster-title');
       var below = under ? under.offsetTop + under.offsetHeight + 90 : 80; // room between the words and the pictures
       var shown = works.filter(function (w) { return filter === 'all' || w.tags.indexOf(filter) !== -1; });
+      // the works further down follow the same choice: only the chosen skill's works stay
+      works.forEach(function (w) {
+        var block = document.getElementById(w.href.slice(1));
+        if (block) block.classList.toggle('filtered-out', shown.indexOf(w) === -1);
+      });
       if (W >= 700) {
         P = Math.max(H * 1.5, W * 0.85);
         spots = WIDE.map(function (s) { return { cx: s[0] * W, cy: s[1] * P, r: s[2] * W }; });
@@ -4037,6 +4100,48 @@ body .menu-item, body .menu-item * {
   })();
 </script>
 <script>
+  /* Photo galleries become carousels: three photos in view, moving one step every few seconds */
+  (function () {
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('#works-flow .transitions-gallery').forEach(function (g) {
+      var photos = g.querySelectorAll(':scope > .transitions-image');
+      if (photos.length < 4) return; // three or fewer: they all fit, nothing to move
+      var wrap = document.createElement('div');
+      wrap.className = 'carousel-wrap';
+      g.parentNode.insertBefore(wrap, g);
+      wrap.appendChild(g);
+      g.classList.add('photo-carousel');
+      function arrow(dir, label, text) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'carousel-arrow carousel-arrow--' + dir;
+        b.setAttribute('aria-label', label);
+        b.textContent = text;
+        wrap.appendChild(b);
+        return b;
+      }
+      function step() { return photos[0].getBoundingClientRect().width + parseFloat(getComputedStyle(g).columnGap || 0); }
+      function atEnd() { return g.scrollLeft + g.clientWidth >= g.scrollWidth - 4; }
+      function next() { if (atEnd()) g.scrollTo({ left: 0, behavior: 'smooth' }); else g.scrollBy({ left: step(), behavior: 'smooth' }); }
+      function prev() { if (g.scrollLeft <= 4) g.scrollTo({ left: g.scrollWidth, behavior: 'smooth' }); else g.scrollBy({ left: -step(), behavior: 'smooth' }); }
+      var restUntil = 0, hovered = false, seen = false;
+      function rest() { restUntil = Date.now() + 8000; } // after someone moves it by hand, wait a bit
+      arrow('prev', 'Previous photos', '\u2190').addEventListener('click', function () { rest(); prev(); });
+      arrow('next', 'Next photos', '\u2192').addEventListener('click', function () { rest(); next(); });
+      ['pointerdown', 'touchstart', 'wheel'].forEach(function (t) { g.addEventListener(t, rest, { passive: true }); });
+      wrap.addEventListener('mouseenter', function () { hovered = true; });
+      wrap.addEventListener('mouseleave', function () { hovered = false; });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) { seen = en[0].isIntersecting; }, { threshold: 0.3 }).observe(wrap);
+      } else { seen = true; }
+      if (still) return;
+      setInterval(function () {
+        if (seen && !hovered && !document.hidden && Date.now() > restUntil && g.offsetParent !== null) next();
+      }, 3500);
+    });
+  })();
+</script>
+<script>
   /* Works below the poster: smooth scroll from the circles, black menu over white, lazy videos, fades, zoom */
   (function () {
     var flow = document.getElementById('works-flow');
@@ -4074,7 +4179,7 @@ body .menu-item, body .menu-item * {
       }, { rootMargin: '300px 0px' });
       still.forEach(function (v) { nearby.observe(v); });
       // pictures and videos fade in when they come into view
-      var fades = [].slice.call(flow.querySelectorAll('.transitions-image, .transitions-video')).filter(function (el) { return !el.closest('.transitions-visuals'); });
+      var fades = [].slice.call(flow.querySelectorAll('.transitions-image, .transitions-video')).filter(function (el) { return !el.closest('.transitions-visuals') && !el.closest('.photo-carousel'); });
       var fader = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { en.target.classList.toggle('is-visible', en.isIntersecting); });
       }, { threshold: 0.12 });
